@@ -240,13 +240,13 @@ pre,code{font-family:'JetBrains Mono',monospace}
     <div class="logo-wrap"><img src="https://image.qwenlm.ai/public_source/11d46e38-6a1a-4c89-b928-434a3032bd2d/1ea0319ed-d47b-424c-8da4-6c4f7409406c.png" alt="Trofeo Java"></div>
     <h1 class="title">¿Quién quiere ser<br>millonario?</h1>
     <div class="osw" style="color:var(--dim);letter-spacing:4px;text-transform:uppercase;font-size:.95rem">— Edición Ingeniería de Software —</div>
-    <p class="subtitle">15 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>90 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
+    <p class="subtitle">15 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>110 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
     <div class="cat-legend" id="cat-legend"></div>
     <div class="rules">
       <div class="rule-card"><div class="ico">🎯</div><h3>Objetivo</h3><p>Supera 15 preguntas de dificultad creciente con temas variados de ingeniería. Puedes <b>plantarte</b> y llevarte lo ganado.</p></div>
       <div class="rule-card"><div class="ico">🛡️</div><h3>Seguros</h3><p>En la pregunta 5 aseguras <b>1.000 €</b> y en la 10, <b>30.000 €</b>. Si fallas, caes al último seguro.</p></div>
       <div class="rule-card"><div class="ico">💡</div><h3>Comodines</h3><p><b>50:50</b>, <b>votación del público</b> y <b>llamada a un amigo</b>. Uno por partida cada uno.</p></div>
-      <div class="rule-card"><div class="ico">📚</div><h3>Modo estudio</h3><p>Consulta el temario completo con las 90 preguntas, sus categorías y explicaciones antes de jugar.</p></div>
+      <div class="rule-card"><div class="ico">📚</div><h3>Modo estudio</h3><p>Consulta el temario completo con las 110 preguntas, sus categorías y explicaciones antes de jugar.</p></div>
     </div>
     <div class="start-btns">
       <button class="btn-gold" id="btn-start">¡Empezar a jugar!</button>
@@ -361,6 +361,7 @@ pre,code{font-family:'JetBrains Mono',monospace}
 
 <div id="confetti"></div>
 
+<script src="preguntas.js"></script>
 <script>
 /* ================= CATEGORÍAS ================= */
 const CATS={
@@ -375,107 +376,11 @@ const catBadge=c=>{const k=CATS[c]||CATS.java;return `<span class="cat-badge">${
 const VALUES=[100,200,300,500,1000,2000,4000,8000,15000,30000,60000,120000,300000,600000,1000000];
 const LETTERS=['A','B','C','D'];
 
-/* ================= NIVEL FÁCIL (26) ================= */
-const EASY=[
- {q:`¿Qué extensión tienen los archivos de código fuente de Java?`,o:[`.class`,`.java`,`.jar`,`.txt`],c:1,exp:`El código fuente se escribe en archivos .java. El compilador javac los transforma en archivos .class que contienen el bytecode que ejecuta la JVM.`},
- {q:`¿Qué palabra clave se usa para crear un objeto nuevo?`,o:[`new`,`create`,`object`,`make`],c:0,exp:`El operador new reserva memoria en el heap y llama al constructor de la clase: Persona p = new Persona();`},
- {q:`¿Cuál es el punto de entrada de una aplicación Java?`,o:[`public void start()`,`static void init()`,`public static void main(String[] args)`,`void run()`],c:2,exp:`La JVM busca el método main con esa firma exacta (public static void main(String[] args)) para arrancar la aplicación.`},
- {q:`¿Cuál de estos es un tipo de dato primitivo en Java?`,o:[`String`,`Integer`,`boolean`,`ArrayList`],c:2,exp:`Java tiene 8 primitivos: byte, short, int, long, float, double, char y boolean. String e Integer son clases (tipos de referencia).`},
- {q:`¿Cómo se escribe un comentario de una sola línea en Java?`,o:[`<!-- comentario -->`,`# comentario`,`// comentario`,`** comentario **`],c:2,exp:`// comenta una línea; /* ... */ sirve para varias líneas y /** ... */ genera documentación Javadoc.`},
- {q:`¿Qué herramienta compila el código fuente Java a bytecode?`,o:[`javac`,`java`,`jvm`,`javadoc`],c:0,exp:`javac genera el bytecode (.class). El comando java lanza la JVM que ejecuta ese bytecode, y javadoc genera la documentación.`},
- {q:`¿Qué imprime este código?`,code:`System.out.println("5" + 3);`,o:[`"53"`,`8`,`Error de compilación`,`NullPointerException`],c:0,exp:`Si uno de los operandos del operador + es un String, se concatena: "5" + 3 produce el String "53".`},
- {q:`¿Cuántos bits ocupa un int en Java?`,o:[`Depende del sistema operativo`,`16 bits`,`32 bits`,`64 bits`],c:2,exp:`En Java los primitivos tienen tamaño fijo e independiente de la plataforma: int siempre ocupa 32 bits (de -2³¹ a 2³¹-1).`},
- {q:`¿Qué operador compara dos valores comprobando si son iguales?`,o:[`=`,`==`,`===`,`=>`],c:1,exp:`= es el operador de asignación; == compara valores. === no existe en Java (es de JavaScript) y => es la flecha de las expresiones lambda.`},
- {q:`¿Qué imprime este código?`,code:`System.out.println(2 + 2 + " Java");`,o:[`4 Java`,`22 Java`,`Java4`,`Error de compilación`],c:0,exp:`Se evalúa de izquierda a derecha: primero 2+2 = 4 (suma de int) y después se concatena con el String: "4 Java".`},
- {q:`¿Qué imprime este código?`,code:`System.out.println("Java" + 2 + 2);`,o:[`Java4`,`Java22`,`4Java`,`Error de compilación`],c:1,exp:`El primer + concatena "Java" con 2 → "Java2"; el segundo concatena "Java2" con 2 → "Java22". Una vez aparece un String, todo concatena.`},
- {q:`¿Con qué símbolo debe terminar cada sentencia en Java?`,o:[`;`,`.`,`,`,`:`],c:0,exp:`Toda sentencia en Java termina en punto y coma (;), por ejemplo: int x = 5; Olvidarlo produce un error de compilación.`},
- {q:`¿Cuál de estos NO es un tipo primitivo?`,o:[`char`,`float`,`double`,`String`],c:3,exp:`String es una clase de java.lang (tipo de referencia). Los primitivos son byte, short, int, long, float, double, char y boolean.`},
- {q:`¿Qué palabra clave devuelve un valor desde un método?`,o:[`return`,`break`,`yield`,`exit`],c:0,exp:`return finaliza el método y devuelve el valor. break sale de un bucle/switch; yield se usa en switch expressions (Java 14+).`},
- {q:`¿Cuál es el resto de la operación 10 % 3?`,o:[`1`,`3`,`0`,`3.33`],c:0,exp:`El operador módulo (%) devuelve el resto de la división entera: 10 = 3·3 + 1, por tanto el resto es 1.`},
- {q:`¿Cuál es la forma correcta de declarar una variable de texto?`,o:[`String nombre = "Ana";`,`string nombre = "Ana";`,`String nombre := "Ana";`,`nombre String = "Ana";`],c:0,exp:`Java distingue mayúsculas y minúsculas: la clase es String (con S mayúscula). La sintaxis es Tipo nombre = valor;`},
- {cat:'db',q:`¿Qué lenguaje se utiliza para consultar y manipular bases de datos relacionales?`,o:[`SQL`,`HTML`,`FTP`,`UML`],c:0,exp:`SQL (Structured Query Language) es el estándar: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE… Cada motor (MySQL, PostgreSQL, Oracle) lo implementa.`},
- {cat:'db',q:`¿Qué sentencia SQL se usa para recuperar datos de una tabla?`,o:[`SELECT`,`GET`,`FETCH`,`EXTRACT`],c:0,exp:`SELECT columnas FROM tabla WHERE condición; es la consulta básica de lectura de datos.`},
- {cat:'db',q:`¿Qué es una PRIMARY KEY (clave primaria)?`,o:[`Un campo que identifica de forma única cada fila de la tabla`,`Un campo que permite valores duplicados`,`Una copia de seguridad de la tabla`,`Un índice opcional sin efecto real`],c:0,exp:`La PRIMARY KEY no admite NULL ni duplicados: identifica cada registro. Ejemplo: id INT PRIMARY KEY.`},
- {cat:'prog',q:`¿Qué estructura de datos sigue el principio LIFO (último en entrar, primero en salir)?`,o:[`Pila (stack)`,`Cola (queue)`,`Conjunto (set)`,`Mapa (map)`],c:0,exp:`Como una pila de platos: se apila y se desapila por arriba (operaciones push/pop). En Java: Deque/Stack.`},
- {cat:'prog',q:`¿Qué estructura sigue el principio FIFO (primero en entrar, primero en salir)?`,o:[`Cola (queue)`,`Pila (stack)`,`Árbol (tree)`,`Grafo (graph)`],c:0,exp:`Como una cola de supermercado: se añade al final (offer/add) y se atiende por el frente (poll/remove). En Java: interfaz Queue.`},
- {cat:'prog',q:`¿Qué es un algoritmo?`,o:[`Una secuencia finita y ordenada de pasos que resuelve un problema`,`Un lenguaje de programación`,`Un tipo de dato numérico`,`Un error en tiempo de ejecución`],c:0,exp:`Es la "receta" que implementa el código: por ejemplo, los pasos para ordenar una lista (quicksort, mergesort…).`},
- {cat:'proj',q:`¿Qué sistema de control de versiones es el estándar actual de la industria?`,o:[`Git`,`FTP`,`Excel`,`Telnet`],c:0,exp:`Git es distribuido y lo usan GitHub, GitLab o Bitbucket. SVN y CVS son sistemas centralizados ya antiguos.`},
- {cat:'proj',q:`¿Qué comando de Git registra los cambios preparados en el historial del repositorio local?`,o:[`git commit`,`git save`,`git push`,`git store`],c:0,exp:`Flujo típico: git add (prepara los cambios), git commit (los registra en el historial) y git push (los sube al remoto).`},
- {cat:'arq',q:`¿Qué patrón separa una aplicación en modelo (datos), vista (presentación) y controlador (lógica)?`,o:[`MVC`,`P2P`,`Cliente-servidor`,`Singleton`],c:0,exp:`Model-View-Controller separa responsabilidades y es la base de muchos frameworks web, como Spring MVC.`},
- {cat:'proj',q:`¿Qué herramienta de construcción y gestión de dependencias es típica en proyectos Java?`,o:[`Maven`,`Tomcat`,`Docker`,`Eclipse`],c:0,exp:`Maven (pom.xml) y Gradle (build.gradle) descargan dependencias y automatizan el build. Tomcat es un servidor y Eclipse un IDE.`}
-];
+/* Banco de preguntas fácil cargado desde preguntas.js */
 
-/* ================= NIVEL MEDIO (32) ================= */
-const MED=[
- {q:`¿Qué significan las siglas JVM?`,o:[`Java Virtual Machine`,`Java Variable Method`,`Just-in-time Virtual Memory`,`Java Verified Module`],c:0,exp:`La Java Virtual Machine ejecuta el bytecode y es la clave de que Java sea "write once, run anywhere".`},
- {q:`¿Qué palabra clave se usa para que una clase herede de otra?`,o:[`implements`,`extends`,`inherits`,`super`],c:1,exp:`extends establece herencia entre clases; implements se usa para implementar interfaces. Java solo permite herencia simple de clases.`},
- {q:`¿Cuál de estos NO es un pilar de la Programación Orientada a Objetos?`,o:[`Encapsulamiento`,`Herencia`,`Compilación`,`Polimorfismo`],c:2,exp:`Los pilares de la POO son encapsulamiento, herencia, polimorfismo y abstracción. La compilación es solo una fase de construcción del programa.`},
- {q:`¿Qué modificador de acceso restringe el acceso únicamente a la propia clase?`,o:[`public`,`protected`,`private`,`default (sin modificador)`],c:2,exp:`private: solo la propia clase. default (sin modificador): mismo paquete. protected: mismo paquete + subclases. public: todo el mundo.`},
- {q:`¿Qué estructura de control se ejecuta al menos una vez siempre?`,o:[`for`,`while`,`do-while`,`for-each`],c:2,exp:`do { ... } while(condición); evalúa la condición DESPUÉS de ejecutar el bloque, por lo que el cuerpo se ejecuta como mínimo una vez.`},
- {q:`¿Cuál es la superclase de todas las clases en Java?`,o:[`Class`,`Object`,`Base`,`Super`],c:1,exp:`Todas las clases heredan implícitamente de java.lang.Object, que aporta toString(), equals(), hashCode(), etc.`},
- {q:`¿Qué hace el Garbage Collector (recolector de basura)?`,o:[`Cierra la consola automáticamente`,`Libera la memoria de los objetos sin referencias`,`Elimina archivos temporales del disco`,`Borra variables duplicadas`],c:1,exp:`El GC detecta objetos inalcanzables y libera su memoria del heap. System.gc() solo sugiere una recogida, nunca la garantiza.`},
- {q:`¿Qué imprime este código?`,code:`System.out.println(7 / 2);`,o:[`3.5`,`3`,`4`,`Error de compilación`],c:1,exp:`7 y 2 son int, así que la división es entera y se trunca: 3. Para obtener 3.5 usa 7.0 / 2 o (double) 7 / 2.`},
- {q:`¿Qué palabra clave impide que una variable vuelva a ser asignada?`,o:[`final`,`const`,`static`,`immutable`],c:0,exp:`final convierte la variable en constante tras su primera asignación. "const" existe como palabra reservada pero no se usa en Java.`},
- {q:`¿Qué devuelve "Hola".length()?`,o:[`3`,`4`,`5`,`Lanza una excepción`],c:1,exp:`length() cuenta los caracteres del String: H-o-l-a = 4. Ojo: en los arrays se usa la propiedad .length (sin paréntesis).`},
- {q:`¿Para qué sirve un constructor de clase?`,o:[`Inicializar el estado del objeto al crearlo`,`Destruir el objeto y liberar su memoria`,`Declarar métodos estáticos`,`Convertir el objeto a String`],c:0,exp:`El constructor tiene el mismo nombre que la clase y no tiene tipo de retorno. Se invoca con new: Persona p = new Persona();`},
- {q:`¿Qué es el encapsulamiento?`,o:[`Ocultar el estado interno y exponer el acceso mediante métodos`,`Agrupar todas las clases en un único paquete`,`Hacer públicos todos los atributos`,`Impedir que una clase tenga herencia`],c:0,exp:`Se logra con atributos private y métodos públicos getters/setters, protegiendo la integridad de los datos del objeto.`},
- {q:`¿Qué hace la sentencia break dentro de un bucle?`,o:[`Sale inmediatamente del bucle`,`Salta a la siguiente iteración`,`Pausa el bucle un segundo`,`Reinicia el bucle desde cero`],c:0,exp:`break termina el bucle (o switch) al instante; continue salta directamente a la siguiente iteración sin ejecutar el resto del cuerpo.`},
- {q:`¿Cuál es la diferencia principal entre un array y un ArrayList?`,o:[`El array tiene tamaño fijo; el ArrayList puede crecer y encoger`,`ArrayList solo almacena String`,`El array crece dinámicamente`,`ArrayList es un tipo primitivo`],c:0,exp:`Un array (int[] a = new int[5]) no cambia de tamaño; ArrayList<E> es una colección dinámica de la API de Java (java.util).`},
- {q:`¿Qué es el autoboxing?`,o:[`Conversión automática entre primitivos y sus wrappers (int ↔ Integer)`,`Anidar una clase dentro de otra`,`Convertir double a int sin pérdida`,`Empaquetar la aplicación en un .jar`],c:0,exp:`Ejemplo: List<Integer> lista; lista.add(5); el 5 se convierte solo a Integer.valueOf(5). El proceso inverso se llama unboxing.`},
- {q:`¿Qué palabra clave usa una clase para implementar una interfaz?`,o:[`implements`,`extends`,`inherits`,`instanceof`],c:0,exp:`Una clase puede implements varias interfaces a la vez (separadas por comas), pero solo puede extends una clase: herencia simple.`},
- {q:`¿Cuál es el valor por defecto de un atributo boolean de una clase?`,o:[`false`,`true`,`null`,`No tiene: da error de compilación`],c:0,exp:`Los atributos se inicializan solos: numéricos a 0, boolean a false y referencias a null. Las variables locales, en cambio, no tienen valor por defecto.`},
- {q:`¿Qué indica void en la firma de un método?`,o:[`Que el método no devuelve ningún valor`,`Que el método es estático`,`Que el método no recibe parámetros`,`Que el método es privado`],c:0,exp:`void significa "sin valor de retorno". Los parámetros van entre paréntesis y son independientes del tipo de retorno.`},
- {q:`¿Qué es una clase wrapper (envoltorio)?`,o:[`Una clase que envuelve un primitivo como objeto (Integer, Double, Boolean…)`,`Una clase sin constructores`,`Una clase que hereda de Exception`,`Una clase anónima dentro de un método`],c:0,exp:`Los wrappers permiten usar primitivos donde se exigen objetos (colecciones, genéricos): Integer, Long, Double, Character, Boolean…`},
- {q:`¿Qué excepción se lanza al acceder al índice 7 de un array de 3 elementos?`,o:[`ArrayIndexOutOfBoundsException`,`NullPointerException`,`ClassCastException`,`ArithmeticException`],c:0,exp:`El índice está fuera del rango válido (0..2). NullPointerException ocurre al usar una referencia null; ClassCastException al hacer un cast inválido.`},
- {cat:'db',q:`¿Qué es una FOREIGN KEY (clave foránea)?`,o:[`Un campo que referencia a la PRIMARY KEY de otra tabla, garantizando integridad referencial`,`Una clave cifrada con contraseña`,`Un índice para acelerar consultas`,`Una PRIMARY KEY duplicada en la misma tabla`],c:0,exp:`Ejemplo: pedidos.cliente_id REFERENCES clientes(id). Impide guardar pedidos de clientes que no existen.`},
- {cat:'db',q:`¿Qué significan las siglas ACID en transacciones?`,o:[`Atomicidad, Consistencia, Aislamiento y Durabilidad`,`Acceso, Control, Identidad y Datos`,`Atomicidad, Cifrado, Integridad y Despliegue`,`Asociación, Consulta, Índice y División`],c:0,exp:`Una transacción se aplica entera o no se aplica: si algo falla, se hace rollback y la BD queda consistente.`},
- {cat:'db',q:`¿Qué sentencia SQL modifica datos ya existentes en una tabla?`,o:[`UPDATE`,`ALTER`,`MODIFY`,`CHANGE`],c:0,exp:`UPDATE tabla SET campo = valor WHERE condición; ALTER modifica la ESTRUCTURA de la tabla (DDL), no sus datos.`},
- {cat:'db',q:`¿Qué hace una cláusula JOIN?`,o:[`Combina filas de dos o más tablas según una condición de relación`,`Duplica una tabla completa`,`Elimina filas repetidas`,`Ordena los resultados alfabéticamente`],c:0,exp:`SELECT ... FROM pedidos JOIN clientes ON pedidos.cliente_id = clientes.id; relaciona datos repartidos en varias tablas.`},
- {cat:'arq',q:`¿Qué principio SOLID indica que una clase debe tener una única responsabilidad?`,o:[`SRP (Single Responsibility Principle)`,`OCP (Open/Closed)`,`LSP (Sustitución de Liskov)`,`DIP (Inversión de dependencias)`],c:0,exp:`Si una clase hace varias cosas tendrá varios motivos para cambiar: conviene separar responsabilidades en clases distintas.`},
- {cat:'arq',q:`¿Qué patrón garantiza que una clase tenga una única instancia con acceso global?`,o:[`Singleton`,`Factory`,`Observer`,`Builder`],c:0,exp:`Constructor privado + instancia estática. Útil para configuración o pools; cuidado: dificulta los tests unitarios.`},
- {cat:'arq',q:`¿Qué es una API REST?`,o:[`Un estilo arquitectónico para servicios web basado en HTTP, verbos y recursos`,`Un lenguaje de programación`,`Una base de datos NoSQL`,`Un framework de Java`],c:0,exp:`GET consulta, POST crea, PUT/PATCH actualiza y DELETE elimina; las respuestas suelen ser JSON.`},
- {cat:'proj',q:`En un proyecto Maven/Gradle estándar, ¿dónde va el código fuente Java?`,o:[`src/main/java`,`source/code`,`java/src`,`bin/main`],c:0,exp:`Convención: src/main/java para el código, src/main/resources para recursos y src/test/java para los tests.`},
- {cat:'proj',q:`¿Para qué sirve el archivo .gitignore?`,o:[`Indicar a Git qué archivos o carpetas NO debe versionar`,`Borrar el repositorio remoto`,`Ignorar errores de compilación`,`Ocultar ramas a otros usuarios`],c:0,exp:`Típico: target/, .idea/, node_modules/, *.class o archivos con credenciales. Evita subir basura o secretos al repo.`},
- {cat:'prog',q:`¿Qué es la recursividad?`,o:[`Una función o método que se llama a sí mismo; necesita un caso base para terminar`,`Un bucle for optimizado por la JVM`,`Un tipo de excepción`,`Una estructura de datos jerárquica`],c:0,exp:`Ejemplo: factorial(n) = n * factorial(n-1) con caso base factorial(0) = 1. Sin caso base: StackOverflowError.`},
- {cat:'prog',q:`¿Cuál es la complejidad media de buscar una clave en un HashMap?`,o:[`O(1)`,`O(n)`,`O(log n)`,`O(n log n)`],c:0,exp:`Gracias a la función hash el acceso es constante en promedio; con colisiones totales degrada a O(n) (Java 8 usa árboles y queda O(log n)).`},
- {cat:'arq',q:`¿Qué patrón crea objetos sin exponer al cliente la lógica de creación?`,o:[`Factory`,`Observer`,`Singleton`,`Adapter`],c:0,exp:`Una clase factoría encapsula la instanciación: Figura f = FactoriaFiguras.crear("circulo"); desacopla al cliente de las clases concretas.`}
-];
+/* Banco de preguntas medio cargado desde preguntas.js */
 
-/* ================= NIVEL DIFÍCIL (32) ================= */
-const HARD=[
- {q:`¿Cuál es la diferencia principal entre == y equals() en objetos?`,o:[`Son exactamente equivalentes`,`== compara referencias; equals() compara contenido si está sobrescrito`,`equals() solo existe en la clase String`,`== compara el contenido de los objetos`],c:1,exp:`== compara si dos referencias apuntan al mismo objeto. equals() en Object también compara referencias, pero clases como String lo sobrescriben para comparar contenido.`},
- {q:`¿Qué efecto tiene declarar un método como final?`,o:[`Lo hace privado`,`Impide que las subclases lo sobrescriban`,`Libera su memoria al terminar`,`Lo convierte en abstracto`],c:1,exp:`Un método final no puede sobrescribirse en subclases, garantizando que su comportamiento no cambie. Una clase final no puede tener subclases (p. ej. String).`},
- {q:`¿Qué colección mantiene el orden de inserción y permite duplicados?`,o:[`HashSet`,`HashMap`,`ArrayList`,`TreeSet`],c:2,exp:`Las implementaciones de List (ArrayList, LinkedList) conservan el orden de inserción y admiten duplicados. Los Set no permiten duplicados.`},
- {q:`¿Qué caracteriza a una excepción checked (verificada)?`,o:[`Es un error de sintaxis detectado por el compilador`,`El compilador obliga a manejarla con try/catch o declararla con throws`,`Solo puede ocurrir en tiempo de ejecución`,`No puede capturarse nunca`],c:1,exp:`Ejemplos: IOException, SQLException. Deben manejarse (try/catch) o propagarse (throws). Las RuntimeException (NullPointerException, etc.) son unchecked.`},
- {q:`¿Qué imprime este código?`,code:`String s = "Hola";\ns.concat(" Java");\nSystem.out.println(s);`,o:[`Hola Java`,`Hola`,`Java`,`Lanza una excepción`],c:1,exp:`String es inmutable: concat() devuelve un NUEVO String y no modifica el original. Como el resultado no se asigna, s sigue valiendo "Hola". Lo correcto sería s = s.concat(" Java");`},
- {q:`¿Puede un método static usar la referencia this?`,o:[`Sí, sin restricciones`,`No: this se refiere a la instancia y los métodos static no pertenecen a ninguna`,`Solo si el método es también final`,`Solo dentro de un bucle`],c:1,exp:`this referencia al objeto actual. Los métodos static pertenecen a la clase, no a una instancia, por lo que no pueden usar this ni acceder a miembros no estáticos directamente.`},
- {q:`Desde Java 8, ¿qué pueden incluir las interfaces?`,o:[`Constructores`,`Atributos de instancia`,`Métodos default y static con implementación`,`Herencia de clases`],c:2,exp:`Java 8 añadió métodos default y static con cuerpo. Siguen sin poder tener constructores ni atributos de instancia: sus constantes son public static final.`},
- {q:`Si sobrescribes equals(), ¿qué método debes sobrescribir también para cumplir el contrato?`,o:[`toString()`,`clone()`,`hashCode()`,`compareTo()`],c:2,exp:`Contrato: si a.equals(b) entonces a.hashCode() == b.hashCode(). No respetarlo rompe HashSet y HashMap: objetos "iguales" quedarían en cubetas distintas.`},
- {q:`¿Qué ocurre al compilar este código?`,code:`public void metodo() {\n    int x;\n    System.out.println(x);\n}`,o:[`Imprime 0`,`Error de compilación: variable local sin inicializar`,`Imprime null`,`Lanza NullPointerException`],c:1,exp:`Las variables locales NO tienen valor por defecto: deben inicializarse antes de usarse. Los atributos de clase sí se inicializan solos (int a 0, objetos a null).`},
- {q:`¿Qué es la sobrecarga (overloading) de métodos?`,o:[`Varios métodos con el mismo nombre pero distinta lista de parámetros en la misma clase`,`Redefinir en una subclase un método heredado con la misma firma`,`Llamar a un método desde varios hilos`,`Convertir tipos de dato automáticamente`],c:0,exp:`Overloading: mismo nombre, parámetros distintos (número, tipo u orden) en la misma clase. Redefinir un método heredado con la misma firma es overriding (sobrescritura).`},
- {q:`¿Qué es el polimorfismo?`,o:[`Una referencia de un supertipo apunta a objetos de distintos tipos y cada uno responde según su clase real`,`Declarar varias variables con el mismo nombre`,`Que un método se llama a sí mismo`,`Convertir un double en int automáticamente`],c:0,exp:`Ejemplo: Animal a = new Perro(); a.sonido() ejecuta la versión de Perro gracias al enlace dinámico (dynamic binding) en tiempo de ejecución.`},
- {q:`¿Qué es una interfaz funcional?`,o:[`Una interfaz con exactamente un método abstracto, utilizable con expresiones lambda`,`Una interfaz con solo métodos default`,`Una interfaz que no puede implementarse`,`Una interfaz cuyos métodos son todos static`],c:0,exp:`Ejemplos: Runnable, Comparator, Predicate, Function. Se marcan con @FunctionalInterface y permiten usar lambdas: () -> System.out.println("hola").`},
- {q:`¿Qué hace la anotación @Override?`,o:[`Verifica en compilación que el método realmente sobrescribe uno de la superclase`,`Hace el método final y privado`,`Mejora el rendimiento en tiempo de ejecución`,`Convierte el método en estático`],c:0,exp:`No es obligatoria, pero si la firma no coincide con ningún método heredado el compilador falla, evitando errores tipográficos silenciosos.`},
- {q:`¿Qué es el type erasure (borrado de tipos) en genéricos?`,o:[`El compilador elimina la información de tipos genéricos y la sustituye por Object o sus límites`,`La JVM borra los genéricos en ejecución con el GC`,`Los genéricos se guardan únicamente en el .java`,`Las clases genéricas no pueden instanciarse`],c:0,exp:`List<String> es simplemente List en tiempo de ejecución. Por eso no se puede hacer new T[] ni instanceof con tipos genéricos parametrizados.`},
- {q:`¿Cuál es la diferencia entre HashMap y Hashtable?`,o:[`Hashtable está sincronizada y no admite null; HashMap no está sincronizada y admite una clave null`,`HashMap está sincronizada y Hashtable no`,`Hashtable admite varias claves null`,`Son idénticas en todo`],c:0,exp:`Hashtable es legado (Java 1.1). Para un solo hilo se prefiere HashMap; para concurrencia real, ConcurrentHashMap.`},
- {q:`¿Qué diferencia hay entre String, StringBuilder y StringBuffer?`,o:[`String es inmutable; StringBuilder es mutable y no sincronizado; StringBuffer es mutable y sincronizado`,`Los tres son inmutables`,`StringBuilder es inmutable y más lento`,`StringBuffer no existe desde Java 8`],c:0,exp:`Para concatenar dentro de bucles usa StringBuilder: evita crear cientos de String intermedios. StringBuffer añade sincronización (más lenta) para varios hilos.`},
- {q:`¿Qué es un thread (hilo) en Java?`,o:[`Un flujo de ejecución independiente; se crea extendiendo Thread o implementando Runnable`,`Una excepción sincronizada`,`Una colección thread-safe`,`Un tipo de variable volatile`],c:0,exp:`thread.start() arranca el hilo y llama a run() internamente. Si llamas a run() directamente, se ejecuta en el hilo actual sin crear ninguno nuevo.`},
- {q:`¿Qué imprime este código?`,code:`System.out.println(new String("abc") == "abc");`,o:[`false`,`true`,`Error de compilación`,`abc`],c:0,exp:`new String("abc") crea un objeto nuevo en el heap, fuera del pool de literales, y == compara referencias. Con equals() daría true.`},
- {q:`¿Qué imprime este código?`,code:`System.out.println("A" + "B" == "AB");`,o:[`true`,`false`,`Error de compilación`,`AB`],c:0,exp:`"A" + "B" es una expresión constante: el compilador la pliega a "AB" en tiempo de compilación y ambos literales comparten la misma entrada del pool de Strings.`},
- {q:`¿Qué hace la palabra clave synchronized en un método?`,o:[`Solo un hilo a la vez puede ejecutarlo sobre el mismo objeto`,`Hace el método más rápido`,`Evita que se lancen excepciones`,`Convierte el método en final`],c:0,exp:`Usa el monitor del objeto (o de la clase si es static) como candado, evitando condiciones de carrera y garantizando visibilidad entre hilos.`},
- {cat:'db',q:`¿Qué es la normalización de una base de datos?`,o:[`Organizar tablas y dependencias para eliminar redundancia y anomalías (1FN, 2FN, 3FN…)`,`Hacer copias de seguridad automáticas`,`Cifrar las columnas sensibles`,`Convertir tablas relacionales a documentos JSON`],c:0,exp:`Busca que cada dato se almacene una sola vez. A veces se desnormaliza puntualmente para ganar rendimiento en lecturas.`},
- {cat:'db',q:`¿Qué diferencia hay entre INNER JOIN y LEFT JOIN?`,o:[`INNER devuelve solo las coincidencias; LEFT añade además todas las filas de la tabla izquierda (con NULL si no casan)`,`LEFT elimina las filas sin coincidencia`,`INNER añade siempre las filas de la derecha con NULL`,`Son exactamente iguales`],c:0,exp:`Con LEFT JOIN, un pedido sin cliente asignado también aparecería en el resultado, con los campos del cliente a NULL.`},
- {cat:'db',q:`¿Qué trade-off introduce crear un índice en una tabla?`,o:[`Acelera las lecturas, pero ralentiza INSERT/UPDATE/DELETE y ocupa espacio extra`,`Acelera todo sin ningún coste`,`Solo acelera la PRIMARY KEY`,`Comprime la tabla a la mitad`],c:0,exp:`El índice (normalmente un árbol B) es una estructura auxiliar que el motor debe mantener actualizada en cada escritura.`},
- {cat:'db',q:`¿Qué es una inyección SQL y cómo se previene en Java?`,o:[`Código malicioso inyectado en consultas; se previene con PreparedStatement y parámetros`,`Un error de tipos; se previene con casts`,`Un bloqueo de tablas; se previene reiniciando el motor`,`Una fuga de memoria; se previene con System.gc()`],c:0,exp:`Nunca construyas SQL concatenando Strings con datos del usuario: usa PreparedStatement y stmt.setString(1, dato).`},
- {cat:'arq',q:`¿Qué principio SOLID dice "una clase debe estar abierta a extensión y cerrada a modificación"?`,o:[`OCP (Open/Closed Principle)`,`SRP (Single Responsibility)`,`ISP (Segregación de interfaces)`,`LSP (Sustitución de Liskov)`],c:0,exp:`Se añade comportamiento con clases nuevas (p. ej. estrategias o decoradores) sin tocar el código ya probado.`},
- {cat:'arq',q:`¿Qué es la inyección de dependencias?`,o:[`Un objeto recibe sus dependencias desde fuera en lugar de crearlas él mismo, favoreciendo el desacople`,`Crear las dependencias dentro del constructor`,`Un patrón para cifrar claves de BD`,`Inyectar código SQL en las consultas`],c:0,exp:`Facilita tests con mocks y bajo acoplamiento. Spring la aplica mediante su contenedor IoC (@Autowired, constructores…).`},
- {cat:'arq',q:`¿Qué caracteriza a una arquitectura de microservicios?`,o:[`Servicios pequeños, autónomos y desplegables de forma independiente que colaboran por red`,`Una única aplicación con todas las capas empaquetadas juntas`,`Todos los servicios compartiendo obligatoriamente la misma base de datos`,`Funciones ejecutadas dentro de un único main`],c:0,exp:`Ventajas: escalado y despliegue independientes. Costes: latencia de red, consistencia eventual y mayor necesidad de observabilidad.`},
- {cat:'arq',q:`¿Qué patrón define objetos suscritos que reaccionan automáticamente cuando el objeto observado cambia?`,o:[`Observer`,`Strategy`,`Decorator`,`Proxy`],c:0,exp:`Es la base de los sistemas de eventos y listeners: ActionListener en Swing, eventos en Spring, suscripciones en UI…`},
- {cat:'proj',q:`¿Qué es CI/CD?`,o:[`Integración y entrega/despliegue continuos: automatizar compilación, tests y despliegue`,`Un tipo de base de datos distribuida`,`Un patrón de diseño de clases`,`Un comando de Git para fusionar ramas`],c:0,exp:`Herramientas: Jenkins, GitHub Actions, GitLab CI. Ejecutar tests automáticos en cada push detecta errores mucho antes.`},
- {cat:'proj',q:`¿Qué diferencia principal hay entre git merge y git rebase?`,o:[`merge une ramas preservando el historial; rebase reescribe la historia colocando los commits sobre la rama base`,`rebase borra la rama de destino`,`merge nunca crea conflictos y rebase siempre`,`Son exactamente iguales`],c:0,exp:`Regla de oro: no hacer rebase sobre commits públicos ya compartidos con otras personas, porque reescribe el historial.`},
- {cat:'prog',q:`¿Qué diseño se considera deseable en los módulos de un sistema?`,o:[`Bajo acoplamiento y alta cohesión`,`Alto acoplamiento y baja cohesión`,`Alto acoplamiento y alta cohesión`,`Bajo acoplamiento y baja cohesión`],c:0,exp:`Cohesión: las responsabilidades internas del módulo están relacionadas. Acoplamiento: depender lo mínimo posible de módulos externos.`},
- {cat:'proj',q:`¿Qué es el principio DRY?`,o:[`Don't Repeat Yourself: evitar duplicar lógica centralizando el conocimiento en un solo lugar`,`Delete Redundant Years: podar código viejo`,`Un algoritmo de compresión de datos`,`Desplegar sin repetir pruebas manuales`],c:0,exp:`El código duplicado obliga a corregir el mismo bug en N sitios: extrae métodos, clases o módulos compartidos.`}
-];
+/* Banco de preguntas difícil cargado desde preguntas.js */
 
 const FRIENDS=[{n:`María`,r:`Java Senior`,e:`👩💻`},{n:`Carlos`,r:`Profesor de POO`,e:`🧑🏫`},{n:`Lucía`,r:`Backend Developer`,e:`👩‍`}];
 
@@ -540,11 +445,35 @@ function updateLadder(){
 }
 function securedAmount(){ if(S.idx>=10)return VALUES[9]; if(S.idx>=5)return VALUES[4]; return 0; }
 
+/* ================= HISTORIAL ANTI-REPETICIÓN ================= */
+const HIST_KEY='sm_historial';
+function getHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY))||{};}catch(e){return {};}}
+function setHistory(h){try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
+function pickUnique(pool,n){
+  const hist=getHistory();
+  const used=hist.used||[];
+  const seen=new Set(used);
+  const fresh=pool.filter(q=>!seen.has(q.q));
+  let chosen;
+  if(fresh.length>=n){
+    chosen=shuffle(fresh).slice(0,n);
+  }else{
+    chosen=shuffle(pool).slice(0,n);
+    const poolTexts=new Set(pool.map(q=>q.q));
+    hist.used=used.filter(t=>!poolTexts.has(t));
+  }
+  const now=chosen.map(q=>q.q);
+  hist.used=[...(hist.used||[]).filter(t=>!now.includes(t)),...now];
+  if(hist.used.length>300)hist.used=hist.used.slice(-300);
+  setHistory(hist);
+  return chosen;
+}
+
 /* ================= FLUJO ================= */
 function startGame(){
   S.idx=0;S.history=[];S.used={fifty:false,audience:false,phone:false};
   ['ll-fifty','ll-audience','ll-phone'].forEach(id=>$(id).disabled=false);
-  S.questions=[...shuffle(EASY).slice(0,5),...shuffle(MED).slice(0,5),...shuffle(HARD).slice(0,5)].map(instantiate);
+  S.questions=[...pickUnique(EASY,5),...pickUnique(MED,5),...pickUnique(HARD,5)].map(instantiate);
   buildLadder();show('scr-game');renderQuestion();
 }
 function renderQuestion(){
