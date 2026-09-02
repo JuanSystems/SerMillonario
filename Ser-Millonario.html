@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Quién Quiere Ser Millonario? · Edición Ingeniería de Software</title>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/oswald/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/roboto/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/index.css" rel="stylesheet">
+<style>
+:root{
+  --bg-deep:#04081f; --panel:#0b1545; --panel2:#12205e;
+  --gold:#f6c445; --gold-dark:#c98f14; --orange:#ff9100;
+  --line:rgba(130,160,255,.25); --text:#eef2ff; --dim:#9fb0e8;
+  --green:#00e676; --red:#ff3d57;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Roboto',sans-serif; color:var(--text); min-height:100vh;
+  background:radial-gradient(ellipse at 50% -20%, #1a2c7a 0%, #0a123f 45%, var(--bg-deep) 100%);
+  overflow-x:hidden;
+}
+#rays{position:fixed;inset:-60%;z-index:0;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(246,196,69,.05) 0deg 5deg, transparent 5deg 13deg);
+  animation:spin 100s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.app{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:18px 16px 60px}
+h1,h2,h3,.osw{font-family:'Oswald',sans-serif}
+button{font-family:inherit;cursor:pointer;border:none}
+button:disabled{cursor:not-allowed}
+pre,code{font-family:'JetBrains Mono',monospace}
+[hidden]{display:none !important}
+
+/* ---------- Botones genéricos ---------- */
+.btn-gold{
+  font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:2px;
+  font-size:1.1rem;color:#241500;padding:14px 34px;border-radius:50px;
+  background:linear-gradient(180deg,#ffe08a,var(--gold) 45%,#d99a17);
+  box-shadow:0 4px 22px rgba(246,196,69,.45), inset 0 1px 0 #fff8;
+  transition:transform .15s, box-shadow .2s; position:relative; overflow:hidden;
+}
+.btn-gold:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 30px rgba(246,196,69,.6)}
+.btn-gold::after{content:"";position:absolute;top:0;left:-80%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,#ffffffaa,transparent);
+  transform:skewX(-20deg);animation:shine 3.2s infinite}
+@keyframes shine{0%{left:-80%}55%{left:130%}100%{left:130%}}
+.btn-ghost{
+  background:transparent;color:var(--dim);border:1px solid var(--line);
+  padding:12px 26px;border-radius:50px;letter-spacing:1px;text-transform:uppercase;
+  font-family:'Oswald',sans-serif;transition:.2s;
+}
+.btn-ghost:hover{color:var(--text);border-color:var(--gold)}
+
+/* ---------- Insignias de categoría ---------- */
+.cat-badge{display:inline-flex;gap:6px;align-items:center;background:#ffffff12;border:1px solid var(--line);
+  border-radius:99px;padding:4px 12px;font-size:.75rem;color:var(--dim);letter-spacing:.6px;text-transform:uppercase}
+.cat-badge b{color:var(--gold);font-weight:600}
+.q-cat{margin-bottom:10px}
+.cat-legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+
+/* ---------- Pantalla inicio ---------- */
+#scr-start{display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;padding-top:26px;animation:fadeIn .7s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.logo-wrap{width:190px;height:190px;border-radius:50%;overflow:hidden;
+  box-shadow:0 0 0 4px var(--gold),0 0 45px rgba(246,196,69,.55),0 18px 40px #000a;
+  animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.logo-wrap img{width:100%;height:100%;object-fit:cover}
+.title{font-size:clamp(2rem,6vw,3.6rem);text-transform:uppercase;letter-spacing:3px;line-height:1.05;
+  background:linear-gradient(180deg,#fff3c4,var(--gold) 55%,#a86e00);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 14px rgba(246,196,69,.35))}
+.subtitle{color:var(--dim);max-width:680px;font-size:1.05rem;line-height:1.6}
+.subtitle b{color:var(--gold)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;width:100%;max-width:960px;margin-top:6px}
+.rule-card{background:linear-gradient(180deg,rgba(18,32,94,.85),rgba(8,16,52,.9));border:1px solid var(--line);
+  border-radius:16px;padding:18px;text-align:left;transition:.25s}
+.rule-card:hover{transform:translateY(-4px);border-color:rgba(246,196,69,.5);box-shadow:0 10px 26px #0008}
+.rule-card .ico{font-size:1.7rem}
+.rule-card h3{color:var(--gold);margin:8px 0 6px;letter-spacing:1px;text-transform:uppercase;font-size:1rem}
+.rule-card p{color:var(--dim);font-size:.92rem;line-height:1.55}
+.start-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+
+/* ---------- HUD ---------- */
+.hud{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.hud-title{font-family:'Oswald';text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-size:1.05rem}
+.hud-title small{display:block;color:var(--dim);letter-spacing:1px;font-size:.72rem}
+.lifelines{display:flex;gap:10px;align-items:center}
+.ll{width:54px;height:54px;border-radius:50%;font-size:1.25rem;position:relative;
+  background:radial-gradient(circle at 30% 25%, #2a3f9e, #101c56 70%);
+  border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 14px rgba(246,196,69,.35);transition:.2s}
+.ll:hover:not(:disabled){transform:scale(1.1)}
+.ll .ll-txt{font-family:'Oswald';font-weight:700;font-size:.82rem;letter-spacing:.5px}
+.ll:disabled{opacity:.35;filter:grayscale(1)}
+.ll:disabled::after{content:"";position:absolute;width:70%;height:3px;background:var(--red);transform:rotate(-45deg);border-radius:2px}
+#btn-walk{background:transparent;border:1px solid rgba(255,145,0,.6);color:var(--orange);
+  padding:10px 20px;border-radius:50px;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;transition:.2s}
+#btn-walk:hover{background:rgba(255,145,0,.15);box-shadow:0 0 14px rgba(255,145,0,.3)}
+#btn-mute{position:fixed;top:12px;right:12px;z-index:60;width:44px;height:44px;border-radius:50%;
+  background:#0b1545cc;border:1px solid var(--line);font-size:1.15rem;backdrop-filter:blur(4px)}
+
+/* ---------- Zona de juego ---------- */
+.game-grid{display:grid;grid-template-columns:1fr 270px;gap:20px;align-items:start}
+@media(max-width:900px){.game-grid{grid-template-columns:1fr}}
+.status-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.chip{background:#0b1545cc;border:1px solid var(--line);border-radius:50px;padding:8px 16px;font-size:.85rem;color:var(--dim)}
+.chip b{color:var(--gold)}
+.chip.safe b{color:var(--green)}
+.question-card{position:relative;border-radius:18px;padding:26px 26px 24px;overflow:hidden;
+  background:linear-gradient(160deg,var(--panel2),var(--panel) 70%);
+  border:1px solid var(--line);box-shadow:0 14px 40px #0009;animation:fadeIn .5s}
+.question-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.q-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-num{font-family:'Oswald';letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-size:.95rem}
+.q-progress{height:6px;width:130px;background:#ffffff14;border-radius:99px;overflow:hidden}
+.q-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .5s}
+.q-text{font-size:clamp(1.05rem,2.4vw,1.35rem);line-height:1.5;font-weight:500}
+.q-code{margin-top:14px;background:#050a24;border:1px solid rgba(0,230,118,.25);border-radius:10px;
+  padding:12px 16px;font-size:.9rem;color:#9ff5c0;overflow-x:auto;white-space:pre}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+@media(max-width:700px){.answers{grid-template-columns:1fr}}
+.answer{
+  display:flex;align-items:center;gap:14px;text-align:left;min-height:64px;padding:12px 30px;
+  background:linear-gradient(180deg,#1e3a8a,#0f1e57);color:var(--text);
+  clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 50%,calc(100% - 20px) 100%,20px 100%,0 50%);
+  font-size:1rem;transition:filter .2s, transform .2s;
+}
+.answer .letter{font-family:'Oswald';font-weight:700;color:var(--gold);font-size:1.15rem;flex-shrink:0}
+.answer:not(.dimmed):not(:disabled):hover{filter:brightness(1.35);transform:translateY(-2px)}
+.answer.selected{background:linear-gradient(180deg,#ffb340,var(--orange) 55%,#c95d00);color:#241500;
+  animation:pulseSel .7s infinite alternate;filter:drop-shadow(0 0 14px rgba(255,145,0,.8))}
+.answer.selected .letter{color:#3a2200}
+@keyframes pulseSel{from{filter:brightness(1) drop-shadow(0 0 6px rgba(255,145,0,.5))}to{filter:brightness(1.4) drop-shadow(0 0 18px rgba(255,145,0,.9))}}
+.answer.correct{background:linear-gradient(180deg,#7dffb0,var(--green) 50%,#00754a);color:#00220f;
+  animation:flashG .5s 2;filter:drop-shadow(0 0 16px rgba(0,230,118,.8))}
+.answer.correct .letter{color:#00331a}
+@keyframes flashG{0%,100%{filter:brightness(1)}50%{filter:brightness(1.9)}}
+.answer.wrong{background:linear-gradient(180deg,#ff8a9b,var(--red) 50%,#8f0f22);color:#2a0007;
+  animation:shake .5s;filter:drop-shadow(0 0 16px rgba(255,61,87,.8))}
+.answer.wrong .letter{color:#3a000a}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.answer.dimmed{opacity:.15;filter:grayscale(1);pointer-events:none}
+.answer.dimmed .opt{text-decoration:line-through}
+.answers.locked .answer{pointer-events:none}
+
+.bar-confirm{display:flex;gap:12px;justify-content:center;margin-top:18px;animation:fadeIn .3s}
+.explain-panel{margin-top:18px;border-left:4px solid var(--gold);border-radius:0 14px 14px 0;
+  background:rgba(246,196,69,.08);padding:18px 20px;animation:fadeIn .45s}
+.explain-panel.bad{border-left-color:var(--red);background:rgba(255,61,87,.08)}
+.explain-panel h4{font-family:'Oswald';letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;color:var(--gold)}
+.explain-panel.bad h4{color:var(--red)}
+.explain-panel p{color:#dfe6ff;line-height:1.65;font-size:.97rem}
+.explain-panel .next-row{margin-top:14px;display:flex;justify-content:flex-end}
+
+/* ---------- Escala de premios ---------- */
+.ladder{background:linear-gradient(180deg,#0d184add,#080f33dd);border:1px solid rgba(246,196,69,.3);
+  border-radius:16px;padding:16px 12px;box-shadow:0 10px 30px #0008}
+.ladder h3{text-align:center;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-size:.9rem;margin-bottom:10px}
+.l-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 14px;border-radius:9px;
+  font-family:'Oswald';font-size:.92rem;color:var(--dim);transition:.25s}
+.l-row .l-num{width:22px;color:#6f7fc0}
+.l-row .l-val{letter-spacing:.5px}
+.l-row.milestone{color:var(--gold);font-weight:700}
+.l-row.milestone .l-num{color:var(--gold)}
+.l-row.passed{opacity:.35}
+.l-row.current{background:linear-gradient(90deg,var(--gold-dark),var(--gold));color:#241500;
+  box-shadow:0 0 16px rgba(246,196,69,.6);transform:scale(1.05)}
+.l-row.current .l-num{color:#241500}
+
+/* ---------- Modales ---------- */
+.modal{position:fixed;inset:0;z-index:80;background:rgba(2,4,18,.78);backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .25s}
+.modal-card{width:min(560px,100%);background:linear-gradient(170deg,var(--panel2),var(--panel));
+  border:1px solid rgba(246,196,69,.4);border-radius:20px;padding:28px;box-shadow:0 24px 70px #000c;
+  animation:popIn .3s}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-card h3{color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;font-size:1.2rem}
+.modal-card p{color:var(--dim);line-height:1.6}
+.modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.aud-bars{display:flex;gap:16px;justify-content:center;align-items:flex-end;height:190px;margin:20px 0 6px}
+.aud-col{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px}
+.aud-pct{font-family:'Oswald';color:var(--gold);font-size:1.05rem}
+.aud-track{width:100%;height:130px;background:#ffffff10;border-radius:8px;display:flex;align-items:flex-end;overflow:hidden}
+.aud-fill{width:100%;height:0%;background:linear-gradient(180deg,#ffe08a,var(--gold) 60%,#d99a17);transition:height 1.1s cubic-bezier(.2,.8,.3,1)}
+.aud-letter{font-family:'Oswald';font-weight:700;color:var(--dim)}
+.ph-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ph-avatar{width:64px;height:64px;border-radius:50%;background:#050a24;border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:2rem}
+.ph-name{font-family:'Oswald';color:var(--gold);letter-spacing:1px}
+.ph-name small{display:block;color:var(--dim);font-family:'Roboto';letter-spacing:0}
+#ph-text{min-height:76px;color:#e8eeff;font-size:1rem;line-height:1.6}
+.ph-calling{color:var(--orange);font-style:italic}
+
+/* ---------- Pantalla final ---------- */
+#scr-end{animation:fadeIn .6s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:20px}
+.end-icon{font-size:4.2rem;filter:drop-shadow(0 0 24px rgba(246,196,69,.6))}
+.end-title{font-size:clamp(1.8rem,5vw,3rem);text-transform:uppercase;letter-spacing:3px;
+  background:linear-gradient(180deg,#fff3c4,var(--gold) 60%,#a86e00);-webkit-background-clip:text;background-clip:text;color:transparent}
+.end-amount{font-family:'Oswald';font-size:clamp(2.4rem,7vw,4.2rem);color:var(--gold);
+  text-shadow:0 0 30px rgba(246,196,69,.55)}
+.end-msg{color:var(--dim);max-width:600px;line-height:1.6}
+.review{width:100%;max-width:860px;margin-top:14px;text-align:left}
+.review h3{color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;font-size:1.1rem}
+.rev-item{background:#0b1545b8;border:1px solid var(--line);border-left:5px solid var(--green);
+  border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.rev-item.bad{border-left-color:var(--red)}
+.rev-q{font-weight:500;margin-bottom:8px;line-height:1.5}
+.rev-q pre{margin-top:8px;background:#050a24;border-radius:8px;padding:8px 12px;font-size:.82rem;color:#9ff5c0;overflow-x:auto}
+.rev-opt{font-size:.92rem;margin:3px 0;color:var(--dim)}
+.rev-opt.ok{color:var(--green)} .rev-opt.bad{color:var(--red)}
+.rev-exp{margin-top:8px;font-size:.9rem;color:#cdd7ff;line-height:1.55;border-top:1px dashed var(--line);padding-top:8px}
+
+/* ---------- Estudio ---------- */
+#scr-study{animation:fadeIn .5s}
+.study-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.study-tier{margin-bottom:26px}
+.study-tier h3{color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+  border-bottom:1px solid rgba(246,196,69,.3);padding-bottom:8px}
+.st-card{background:#0b1545b8;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.st-card .rev-q{font-size:1.02rem}
+.st-opt{padding:6px 12px;border-radius:8px;margin:5px 0;font-size:.94rem;color:var(--dim);background:#ffffff08}
+.st-opt.ok{color:var(--green);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.35)}
+
+/* ---------- Confeti ---------- */
+.cf{position:fixed;top:-24px;z-index:95;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(112vh) rotate(760deg);opacity:.85}}
+</style>
+</head>
+<body>
+<div id="rays"></div>
+<button id="btn-mute" title="Sonido">🔊</button>
+
+<div class="app">
+
+  <!-- ============ INICIO ============ -->
+  <section id="scr-start">
+    <div class="logo-wrap"><img src="https://image.qwenlm.ai/public_source/11d46e38-6a1a-4c89-b928-434a3032bd2d/1ea0319ed-d47b-424c-8da4-6c4f7409406c.png" alt="Trofeo Java"></div>
+    <h1 class="title">¿Quién quiere ser<br>millonario?</h1>
+    <div class="osw" style="color:var(--dim);letter-spacing:4px;text-transform:uppercase;font-size:.95rem">— Edición Ingeniería de Software —</div>
+    <p class="subtitle">15 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>90 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
+    <div class="cat-legend" id="cat-legend"></div>
+    <div class="rules">
+      <div class="rule-card"><div class="ico">🎯</div><h3>Objetivo</h3><p>Supera 15 preguntas de dificultad creciente con temas variados de ingeniería. Puedes <b>plantarte</b> y llevarte lo ganado.</p></div>
+      <div class="rule-card"><div class="ico">🛡️</div><h3>Seguros</h3><p>En la pregunta 5 aseguras <b>1.000 €</b> y en la 10, <b>30.000 €</b>. Si fallas, caes al último seguro.</p></div>
+      <div class="rule-card"><div class="ico">💡</div><h3>Comodines</h3><p><b>50:50</b>, <b>votación del público</b> y <b>llamada a un amigo</b>. Uno por partida cada uno.</p></div>
+      <div class="rule-card"><div class="ico">📚</div><h3>Modo estudio</h3><p>Consulta el temario completo con las 90 preguntas, sus categorías y explicaciones antes de jugar.</p></div>
+    </div>
+    <div class="start-btns">
+      <button class="btn-gold" id="btn-start">¡Empezar a jugar!</button>
+      <button class="btn-ghost" id="btn-study">📖 Estudiar el temario</button>
+    </div>
+  </section>
+
+  <!-- ============ JUEGO ============ -->
+  <section id="scr-game" hidden>
+    <div class="hud">
+      <div class="hud-title">Millonario · Ing. de Software<small>Java · BD · Arquitectura · Proyectos</small></div>
+      <div class="lifelines">
+        <button class="ll" id="ll-fifty" title="Comodín 50:50"><span class="ll-txt">50:50</span></button>
+        <button class="ll" id="ll-audience" title="Votación del público">👥</button>
+        <button class="ll" id="ll-phone" title="Llamada a un amigo">📞</button>
+      </div>
+      <button id="btn-walk">🤝 Plantarse</button>
+    </div>
+    <div class="game-grid">
+      <div>
+        <div class="status-bar">
+          <div class="chip">Pregunta <b id="st-num">1/15</b></div>
+          <div class="chip">En juego: <b id="st-play">100 €</b></div>
+          <div class="chip safe">Asegurado: <b id="st-safe">0 €</b></div>
+        </div>
+        <div class="question-card">
+          <div class="q-head">
+            <span class="q-num" id="q-num">Pregunta 1</span>
+            <span class="q-progress"><i id="q-bar" style="width:6%"></i></span>
+          </div>
+          <div class="q-cat" id="q-cat"></div>
+          <div class="q-text" id="q-text"></div>
+          <pre class="q-code" id="q-code" hidden></pre>
+        </div>
+        <div class="answers" id="answers"></div>
+        <div class="bar-confirm" id="bar-confirm" hidden>
+          <button class="btn-gold" id="btn-confirm" style="font-size:.95rem;padding:11px 26px">¿Es tu respuesta definitiva?</button>
+          <button class="btn-ghost" id="btn-cancel">Cambiar</button>
+        </div>
+        <div class="explain-panel" id="panel-exp" hidden>
+          <h4 id="exp-title"></h4>
+          <p id="exp-text"></p>
+          <div class="next-row"><button class="btn-gold" id="btn-next" style="font-size:.95rem;padding:11px 26px">Continuar →</button></div>
+        </div>
+      </div>
+      <aside class="ladder">
+        <h3>🏆 Escala de premios</h3>
+        <div id="ladder-list"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ ESTUDIO ============ -->
+  <section id="scr-study" hidden>
+    <div class="study-head">
+      <h2 class="title" style="font-size:1.7rem">📖 Temario de Ingeniería de Software</h2>
+      <button class="btn-ghost" id="btn-study-back">← Volver</button>
+    </div>
+    <div class="cat-legend" id="cat-legend-2" style="margin-bottom:18px"></div>
+    <div id="study-content"></div>
+    <div style="text-align:center;margin-top:20px"><button class="btn-gold" id="btn-study-play">¡Ya estoy listo, a jugar!</button></div>
+  </section>
+
+  <!-- ============ FINAL ============ -->
+  <section id="scr-end" hidden>
+    <div class="end-icon" id="end-icon">🏆</div>
+    <h2 class="end-title" id="end-title"></h2>
+    <div class="end-amount" id="end-amount"></div>
+    <p class="end-msg" id="end-msg"></p>
+    <div class="start-btns">
+      <button class="btn-gold" id="btn-replay">🔁 Jugar otra vez</button>
+      <button class="btn-ghost" id="btn-home">🏠 Inicio</button>
+    </div>
+    <div class="review">
+      <h3>📚 Repaso para tu examen</h3>
+      <div id="review-list"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ MODALES ============ -->
+<div class="modal" id="modal-walk" hidden>
+  <div class="modal-card">
+    <h3>🤝 ¿Plantarse?</h3>
+    <p id="walk-text"></p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="walk-no">Seguir jugando</button>
+      <button class="btn-gold" id="walk-yes" style="font-size:.95rem;padding:11px 24px">Llevarme el dinero</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-audience" hidden>
+  <div class="modal-card">
+    <h3>👥 El público ha votado</h3>
+    <div class="aud-bars" id="aud-bars"></div>
+    <div class="modal-actions"><button class="btn-gold" id="aud-close" style="font-size:.95rem;padding:10px 24px">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="modal" id="modal-phone" hidden>
+  <div class="modal-card">
+    <h3>📞 Llamada a un amigo</h3>
+    <div class="ph-head">
+      <div class="ph-avatar" id="ph-avatar">👩💻</div>
+      <div class="ph-name" id="ph-name">María<small>Java Senior</small></div>
+    </div>
+    <p id="ph-text" class="ph-calling">Llamando…</p>
+    <div class="modal-actions"><button class="btn-gold" id="ph-close" style="font-size:.95rem;padding:10px 24px">Colgar</button></div>
+  </div>
+</div>
+
+<div id="confetti"></div>
+
+<script>
+/* ================= CATEGORÍAS ================= */
+const CATS={
+  java:['☕','Java'],
+  db:['🗄️','Base de datos'],
+  arq:['🏗️','Arquitectura'],
+  prog:['💻','Programación'],
+  proj:['📁','Proyectos']
+};
+const catBadge=c=>{const k=CATS[c]||CATS.java;return `<span class="cat-badge">${k[0]} <b>${k[1]}</b></span>`;};
+
+const VALUES=[100,200,300,500,1000,2000,4000,8000,15000,30000,60000,120000,300000,600000,1000000];
+const LETTERS=['A','B','C','D'];
+
+/* ================= NIVEL FÁCIL (26) ================= */
+const EASY=[
+ {q:`¿Qué extensión tienen los archivos de código fuente de Java?`,o:[`.class`,`.java`,`.jar`,`.txt`],c:1,exp:`El código fuente se escribe en archivos .java. El compilador javac los transforma en archivos .class que contienen el bytecode que ejecuta la JVM.`},
+ {q:`¿Qué palabra clave se usa para crear un objeto nuevo?`,o:[`new`,`create`,`object`,`make`],c:0,exp:`El operador new reserva memoria en el heap y llama al constructor de la clase: Persona p = new Persona();`},
+ {q:`¿Cuál es el punto de entrada de una aplicación Java?`,o:[`public void start()`,`static void init()`,`public static void main(String[] args)`,`void run()`],c:2,exp:`La JVM busca el método main con esa firma exacta (public static void main(String[] args)) para arrancar la aplicación.`},
+ {q:`¿Cuál de estos es un tipo de dato primitivo en Java?`,o:[`String`,`Integer`,`boolean`,`ArrayList`],c:2,exp:`Java tiene 8 primitivos: byte, short, int, long, float, double, char y boolean. String e Integer son clases (tipos de referencia).`},
+ {q:`¿Cómo se escribe un comentario de una sola línea en Java?`,o:[`<!-- comentario -->`,`# comentario`,`// comentario`,`** comentario **`],c:2,exp:`// comenta una línea; /* ... */ sirve para varias líneas y /** ... */ genera documentación Javadoc.`},
+ {q:`¿Qué herramienta compila el código fuente Java a bytecode?`,o:[`javac`,`java`,`jvm`,`javadoc`],c:0,exp:`javac genera el bytecode (.class). El comando java lanza la JVM que ejecuta ese bytecode, y javadoc genera la documentación.`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println("5" + 3);`,o:[`"53"`,`8`,`Error de compilación`,`NullPointerException`],c:0,exp:`Si uno de los operandos del operador + es un String, se concatena: "5" + 3 produce el String "53".`},
+ {q:`¿Cuántos bits ocupa un int en Java?`,o:[`Depende del sistema operativo`,`16 bits`,`32 bits`,`64 bits`],c:2,exp:`En Java los primitivos tienen tamaño fijo e independiente de la plataforma: int siempre ocupa 32 bits (de -2³¹ a 2³¹-1).`},
+ {q:`¿Qué operador compara dos valores comprobando si son iguales?`,o:[`=`,`==`,`===`,`=>`],c:1,exp:`= es el operador de asignación; == compara valores. === no existe en Java (es de JavaScript) y => es la flecha de las expresiones lambda.`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println(2 + 2 + " Java");`,o:[`4 Java`,`22 Java`,`Java4`,`Error de compilación`],c:0,exp:`Se evalúa de izquierda a derecha: primero 2+2 = 4 (suma de int) y después se concatena con el String: "4 Java".`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println("Java" + 2 + 2);`,o:[`Java4`,`Java22`,`4Java`,`Error de compilación`],c:1,exp:`El primer + concatena "Java" con 2 → "Java2"; el segundo concatena "Java2" con 2 → "Java22". Una vez aparece un String, todo concatena.`},
+ {q:`¿Con qué símbolo debe terminar cada sentencia en Java?`,o:[`;`,`.`,`,`,`:`],c:0,exp:`Toda sentencia en Java termina en punto y coma (;), por ejemplo: int x = 5; Olvidarlo produce un error de compilación.`},
+ {q:`¿Cuál de estos NO es un tipo primitivo?`,o:[`char`,`float`,`double`,`String`],c:3,exp:`String es una clase de java.lang (tipo de referencia). Los primitivos son byte, short, int, long, float, double, char y boolean.`},
+ {q:`¿Qué palabra clave devuelve un valor desde un método?`,o:[`return`,`break`,`yield`,`exit`],c:0,exp:`return finaliza el método y devuelve el valor. break sale de un bucle/switch; yield se usa en switch expressions (Java 14+).`},
+ {q:`¿Cuál es el resto de la operación 10 % 3?`,o:[`1`,`3`,`0`,`3.33`],c:0,exp:`El operador módulo (%) devuelve el resto de la división entera: 10 = 3·3 + 1, por tanto el resto es 1.`},
+ {q:`¿Cuál es la forma correcta de declarar una variable de texto?`,o:[`String nombre = "Ana";`,`string nombre = "Ana";`,`String nombre := "Ana";`,`nombre String = "Ana";`],c:0,exp:`Java distingue mayúsculas y minúsculas: la clase es String (con S mayúscula). La sintaxis es Tipo nombre = valor;`},
+ {cat:'db',q:`¿Qué lenguaje se utiliza para consultar y manipular bases de datos relacionales?`,o:[`SQL`,`HTML`,`FTP`,`UML`],c:0,exp:`SQL (Structured Query Language) es el estándar: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE… Cada motor (MySQL, PostgreSQL, Oracle) lo implementa.`},
+ {cat:'db',q:`¿Qué sentencia SQL se usa para recuperar datos de una tabla?`,o:[`SELECT`,`GET`,`FETCH`,`EXTRACT`],c:0,exp:`SELECT columnas FROM tabla WHERE condición; es la consulta básica de lectura de datos.`},
+ {cat:'db',q:`¿Qué es una PRIMARY KEY (clave primaria)?`,o:[`Un campo que identifica de forma única cada fila de la tabla`,`Un campo que permite valores duplicados`,`Una copia de seguridad de la tabla`,`Un índice opcional sin efecto real`],c:0,exp:`La PRIMARY KEY no admite NULL ni duplicados: identifica cada registro. Ejemplo: id INT PRIMARY KEY.`},
+ {cat:'prog',q:`¿Qué estructura de datos sigue el principio LIFO (último en entrar, primero en salir)?`,o:[`Pila (stack)`,`Cola (queue)`,`Conjunto (set)`,`Mapa (map)`],c:0,exp:`Como una pila de platos: se apila y se desapila por arriba (operaciones push/pop). En Java: Deque/Stack.`},
+ {cat:'prog',q:`¿Qué estructura sigue el principio FIFO (primero en entrar, primero en salir)?`,o:[`Cola (queue)`,`Pila (stack)`,`Árbol (tree)`,`Grafo (graph)`],c:0,exp:`Como una cola de supermercado: se añade al final (offer/add) y se atiende por el frente (poll/remove). En Java: interfaz Queue.`},
+ {cat:'prog',q:`¿Qué es un algoritmo?`,o:[`Una secuencia finita y ordenada de pasos que resuelve un problema`,`Un lenguaje de programación`,`Un tipo de dato numérico`,`Un error en tiempo de ejecución`],c:0,exp:`Es la "receta" que implementa el código: por ejemplo, los pasos para ordenar una lista (quicksort, mergesort…).`},
+ {cat:'proj',q:`¿Qué sistema de control de versiones es el estándar actual de la industria?`,o:[`Git`,`FTP`,`Excel`,`Telnet`],c:0,exp:`Git es distribuido y lo usan GitHub, GitLab o Bitbucket. SVN y CVS son sistemas centralizados ya antiguos.`},
+ {cat:'proj',q:`¿Qué comando de Git registra los cambios preparados en el historial del repositorio local?`,o:[`git commit`,`git save`,`git push`,`git store`],c:0,exp:`Flujo típico: git add (prepara los cambios), git commit (los registra en el historial) y git push (los sube al remoto).`},
+ {cat:'arq',q:`¿Qué patrón separa una aplicación en modelo (datos), vista (presentación) y controlador (lógica)?`,o:[`MVC`,`P2P`,`Cliente-servidor`,`Singleton`],c:0,exp:`Model-View-Controller separa responsabilidades y es la base de muchos frameworks web, como Spring MVC.`},
+ {cat:'proj',q:`¿Qué herramienta de construcción y gestión de dependencias es típica en proyectos Java?`,o:[`Maven`,`Tomcat`,`Docker`,`Eclipse`],c:0,exp:`Maven (pom.xml) y Gradle (build.gradle) descargan dependencias y automatizan el build. Tomcat es un servidor y Eclipse un IDE.`}
+];
+
+/* ================= NIVEL MEDIO (32) ================= */
+const MED=[
+ {q:`¿Qué significan las siglas JVM?`,o:[`Java Virtual Machine`,`Java Variable Method`,`Just-in-time Virtual Memory`,`Java Verified Module`],c:0,exp:`La Java Virtual Machine ejecuta el bytecode y es la clave de que Java sea "write once, run anywhere".`},
+ {q:`¿Qué palabra clave se usa para que una clase herede de otra?`,o:[`implements`,`extends`,`inherits`,`super`],c:1,exp:`extends establece herencia entre clases; implements se usa para implementar interfaces. Java solo permite herencia simple de clases.`},
+ {q:`¿Cuál de estos NO es un pilar de la Programación Orientada a Objetos?`,o:[`Encapsulamiento`,`Herencia`,`Compilación`,`Polimorfismo`],c:2,exp:`Los pilares de la POO son encapsulamiento, herencia, polimorfismo y abstracción. La compilación es solo una fase de construcción del programa.`},
+ {q:`¿Qué modificador de acceso restringe el acceso únicamente a la propia clase?`,o:[`public`,`protected`,`private`,`default (sin modificador)`],c:2,exp:`private: solo la propia clase. default (sin modificador): mismo paquete. protected: mismo paquete + subclases. public: todo el mundo.`},
+ {q:`¿Qué estructura de control se ejecuta al menos una vez siempre?`,o:[`for`,`while`,`do-while`,`for-each`],c:2,exp:`do { ... } while(condición); evalúa la condición DESPUÉS de ejecutar el bloque, por lo que el cuerpo se ejecuta como mínimo una vez.`},
+ {q:`¿Cuál es la superclase de todas las clases en Java?`,o:[`Class`,`Object`,`Base`,`Super`],c:1,exp:`Todas las clases heredan implícitamente de java.lang.Object, que aporta toString(), equals(), hashCode(), etc.`},
+ {q:`¿Qué hace el Garbage Collector (recolector de basura)?`,o:[`Cierra la consola automáticamente`,`Libera la memoria de los objetos sin referencias`,`Elimina archivos temporales del disco`,`Borra variables duplicadas`],c:1,exp:`El GC detecta objetos inalcanzables y libera su memoria del heap. System.gc() solo sugiere una recogida, nunca la garantiza.`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println(7 / 2);`,o:[`3.5`,`3`,`4`,`Error de compilación`],c:1,exp:`7 y 2 son int, así que la división es entera y se trunca: 3. Para obtener 3.5 usa 7.0 / 2 o (double) 7 / 2.`},
+ {q:`¿Qué palabra clave impide que una variable vuelva a ser asignada?`,o:[`final`,`const`,`static`,`immutable`],c:0,exp:`final convierte la variable en constante tras su primera asignación. "const" existe como palabra reservada pero no se usa en Java.`},
+ {q:`¿Qué devuelve "Hola".length()?`,o:[`3`,`4`,`5`,`Lanza una excepción`],c:1,exp:`length() cuenta los caracteres del String: H-o-l-a = 4. Ojo: en los arrays se usa la propiedad .length (sin paréntesis).`},
+ {q:`¿Para qué sirve un constructor de clase?`,o:[`Inicializar el estado del objeto al crearlo`,`Destruir el objeto y liberar su memoria`,`Declarar métodos estáticos`,`Convertir el objeto a String`],c:0,exp:`El constructor tiene el mismo nombre que la clase y no tiene tipo de retorno. Se invoca con new: Persona p = new Persona();`},
+ {q:`¿Qué es el encapsulamiento?`,o:[`Ocultar el estado interno y exponer el acceso mediante métodos`,`Agrupar todas las clases en un único paquete`,`Hacer públicos todos los atributos`,`Impedir que una clase tenga herencia`],c:0,exp:`Se logra con atributos private y métodos públicos getters/setters, protegiendo la integridad de los datos del objeto.`},
+ {q:`¿Qué hace la sentencia break dentro de un bucle?`,o:[`Sale inmediatamente del bucle`,`Salta a la siguiente iteración`,`Pausa el bucle un segundo`,`Reinicia el bucle desde cero`],c:0,exp:`break termina el bucle (o switch) al instante; continue salta directamente a la siguiente iteración sin ejecutar el resto del cuerpo.`},
+ {q:`¿Cuál es la diferencia principal entre un array y un ArrayList?`,o:[`El array tiene tamaño fijo; el ArrayList puede crecer y encoger`,`ArrayList solo almacena String`,`El array crece dinámicamente`,`ArrayList es un tipo primitivo`],c:0,exp:`Un array (int[] a = new int[5]) no cambia de tamaño; ArrayList<E> es una colección dinámica de la API de Java (java.util).`},
+ {q:`¿Qué es el autoboxing?`,o:[`Conversión automática entre primitivos y sus wrappers (int ↔ Integer)`,`Anidar una clase dentro de otra`,`Convertir double a int sin pérdida`,`Empaquetar la aplicación en un .jar`],c:0,exp:`Ejemplo: List<Integer> lista; lista.add(5); el 5 se convierte solo a Integer.valueOf(5). El proceso inverso se llama unboxing.`},
+ {q:`¿Qué palabra clave usa una clase para implementar una interfaz?`,o:[`implements`,`extends`,`inherits`,`instanceof`],c:0,exp:`Una clase puede implements varias interfaces a la vez (separadas por comas), pero solo puede extends una clase: herencia simple.`},
+ {q:`¿Cuál es el valor por defecto de un atributo boolean de una clase?`,o:[`false`,`true`,`null`,`No tiene: da error de compilación`],c:0,exp:`Los atributos se inicializan solos: numéricos a 0, boolean a false y referencias a null. Las variables locales, en cambio, no tienen valor por defecto.`},
+ {q:`¿Qué indica void en la firma de un método?`,o:[`Que el método no devuelve ningún valor`,`Que el método es estático`,`Que el método no recibe parámetros`,`Que el método es privado`],c:0,exp:`void significa "sin valor de retorno". Los parámetros van entre paréntesis y son independientes del tipo de retorno.`},
+ {q:`¿Qué es una clase wrapper (envoltorio)?`,o:[`Una clase que envuelve un primitivo como objeto (Integer, Double, Boolean…)`,`Una clase sin constructores`,`Una clase que hereda de Exception`,`Una clase anónima dentro de un método`],c:0,exp:`Los wrappers permiten usar primitivos donde se exigen objetos (colecciones, genéricos): Integer, Long, Double, Character, Boolean…`},
+ {q:`¿Qué excepción se lanza al acceder al índice 7 de un array de 3 elementos?`,o:[`ArrayIndexOutOfBoundsException`,`NullPointerException`,`ClassCastException`,`ArithmeticException`],c:0,exp:`El índice está fuera del rango válido (0..2). NullPointerException ocurre al usar una referencia null; ClassCastException al hacer un cast inválido.`},
+ {cat:'db',q:`¿Qué es una FOREIGN KEY (clave foránea)?`,o:[`Un campo que referencia a la PRIMARY KEY de otra tabla, garantizando integridad referencial`,`Una clave cifrada con contraseña`,`Un índice para acelerar consultas`,`Una PRIMARY KEY duplicada en la misma tabla`],c:0,exp:`Ejemplo: pedidos.cliente_id REFERENCES clientes(id). Impide guardar pedidos de clientes que no existen.`},
+ {cat:'db',q:`¿Qué significan las siglas ACID en transacciones?`,o:[`Atomicidad, Consistencia, Aislamiento y Durabilidad`,`Acceso, Control, Identidad y Datos`,`Atomicidad, Cifrado, Integridad y Despliegue`,`Asociación, Consulta, Índice y División`],c:0,exp:`Una transacción se aplica entera o no se aplica: si algo falla, se hace rollback y la BD queda consistente.`},
+ {cat:'db',q:`¿Qué sentencia SQL modifica datos ya existentes en una tabla?`,o:[`UPDATE`,`ALTER`,`MODIFY`,`CHANGE`],c:0,exp:`UPDATE tabla SET campo = valor WHERE condición; ALTER modifica la ESTRUCTURA de la tabla (DDL), no sus datos.`},
+ {cat:'db',q:`¿Qué hace una cláusula JOIN?`,o:[`Combina filas de dos o más tablas según una condición de relación`,`Duplica una tabla completa`,`Elimina filas repetidas`,`Ordena los resultados alfabéticamente`],c:0,exp:`SELECT ... FROM pedidos JOIN clientes ON pedidos.cliente_id = clientes.id; relaciona datos repartidos en varias tablas.`},
+ {cat:'arq',q:`¿Qué principio SOLID indica que una clase debe tener una única responsabilidad?`,o:[`SRP (Single Responsibility Principle)`,`OCP (Open/Closed)`,`LSP (Sustitución de Liskov)`,`DIP (Inversión de dependencias)`],c:0,exp:`Si una clase hace varias cosas tendrá varios motivos para cambiar: conviene separar responsabilidades en clases distintas.`},
+ {cat:'arq',q:`¿Qué patrón garantiza que una clase tenga una única instancia con acceso global?`,o:[`Singleton`,`Factory`,`Observer`,`Builder`],c:0,exp:`Constructor privado + instancia estática. Útil para configuración o pools; cuidado: dificulta los tests unitarios.`},
+ {cat:'arq',q:`¿Qué es una API REST?`,o:[`Un estilo arquitectónico para servicios web basado en HTTP, verbos y recursos`,`Un lenguaje de programación`,`Una base de datos NoSQL`,`Un framework de Java`],c:0,exp:`GET consulta, POST crea, PUT/PATCH actualiza y DELETE elimina; las respuestas suelen ser JSON.`},
+ {cat:'proj',q:`En un proyecto Maven/Gradle estándar, ¿dónde va el código fuente Java?`,o:[`src/main/java`,`source/code`,`java/src`,`bin/main`],c:0,exp:`Convención: src/main/java para el código, src/main/resources para recursos y src/test/java para los tests.`},
+ {cat:'proj',q:`¿Para qué sirve el archivo .gitignore?`,o:[`Indicar a Git qué archivos o carpetas NO debe versionar`,`Borrar el repositorio remoto`,`Ignorar errores de compilación`,`Ocultar ramas a otros usuarios`],c:0,exp:`Típico: target/, .idea/, node_modules/, *.class o archivos con credenciales. Evita subir basura o secretos al repo.`},
+ {cat:'prog',q:`¿Qué es la recursividad?`,o:[`Una función o método que se llama a sí mismo; necesita un caso base para terminar`,`Un bucle for optimizado por la JVM`,`Un tipo de excepción`,`Una estructura de datos jerárquica`],c:0,exp:`Ejemplo: factorial(n) = n * factorial(n-1) con caso base factorial(0) = 1. Sin caso base: StackOverflowError.`},
+ {cat:'prog',q:`¿Cuál es la complejidad media de buscar una clave en un HashMap?`,o:[`O(1)`,`O(n)`,`O(log n)`,`O(n log n)`],c:0,exp:`Gracias a la función hash el acceso es constante en promedio; con colisiones totales degrada a O(n) (Java 8 usa árboles y queda O(log n)).`},
+ {cat:'arq',q:`¿Qué patrón crea objetos sin exponer al cliente la lógica de creación?`,o:[`Factory`,`Observer`,`Singleton`,`Adapter`],c:0,exp:`Una clase factoría encapsula la instanciación: Figura f = FactoriaFiguras.crear("circulo"); desacopla al cliente de las clases concretas.`}
+];
+
+/* ================= NIVEL DIFÍCIL (32) ================= */
+const HARD=[
+ {q:`¿Cuál es la diferencia principal entre == y equals() en objetos?`,o:[`Son exactamente equivalentes`,`== compara referencias; equals() compara contenido si está sobrescrito`,`equals() solo existe en la clase String`,`== compara el contenido de los objetos`],c:1,exp:`== compara si dos referencias apuntan al mismo objeto. equals() en Object también compara referencias, pero clases como String lo sobrescriben para comparar contenido.`},
+ {q:`¿Qué efecto tiene declarar un método como final?`,o:[`Lo hace privado`,`Impide que las subclases lo sobrescriban`,`Libera su memoria al terminar`,`Lo convierte en abstracto`],c:1,exp:`Un método final no puede sobrescribirse en subclases, garantizando que su comportamiento no cambie. Una clase final no puede tener subclases (p. ej. String).`},
+ {q:`¿Qué colección mantiene el orden de inserción y permite duplicados?`,o:[`HashSet`,`HashMap`,`ArrayList`,`TreeSet`],c:2,exp:`Las implementaciones de List (ArrayList, LinkedList) conservan el orden de inserción y admiten duplicados. Los Set no permiten duplicados.`},
+ {q:`¿Qué caracteriza a una excepción checked (verificada)?`,o:[`Es un error de sintaxis detectado por el compilador`,`El compilador obliga a manejarla con try/catch o declararla con throws`,`Solo puede ocurrir en tiempo de ejecución`,`No puede capturarse nunca`],c:1,exp:`Ejemplos: IOException, SQLException. Deben manejarse (try/catch) o propagarse (throws). Las RuntimeException (NullPointerException, etc.) son unchecked.`},
+ {q:`¿Qué imprime este código?`,code:`String s = "Hola";\ns.concat(" Java");\nSystem.out.println(s);`,o:[`Hola Java`,`Hola`,`Java`,`Lanza una excepción`],c:1,exp:`String es inmutable: concat() devuelve un NUEVO String y no modifica el original. Como el resultado no se asigna, s sigue valiendo "Hola". Lo correcto sería s = s.concat(" Java");`},
+ {q:`¿Puede un método static usar la referencia this?`,o:[`Sí, sin restricciones`,`No: this se refiere a la instancia y los métodos static no pertenecen a ninguna`,`Solo si el método es también final`,`Solo dentro de un bucle`],c:1,exp:`this referencia al objeto actual. Los métodos static pertenecen a la clase, no a una instancia, por lo que no pueden usar this ni acceder a miembros no estáticos directamente.`},
+ {q:`Desde Java 8, ¿qué pueden incluir las interfaces?`,o:[`Constructores`,`Atributos de instancia`,`Métodos default y static con implementación`,`Herencia de clases`],c:2,exp:`Java 8 añadió métodos default y static con cuerpo. Siguen sin poder tener constructores ni atributos de instancia: sus constantes son public static final.`},
+ {q:`Si sobrescribes equals(), ¿qué método debes sobrescribir también para cumplir el contrato?`,o:[`toString()`,`clone()`,`hashCode()`,`compareTo()`],c:2,exp:`Contrato: si a.equals(b) entonces a.hashCode() == b.hashCode(). No respetarlo rompe HashSet y HashMap: objetos "iguales" quedarían en cubetas distintas.`},
+ {q:`¿Qué ocurre al compilar este código?`,code:`public void metodo() {\n    int x;\n    System.out.println(x);\n}`,o:[`Imprime 0`,`Error de compilación: variable local sin inicializar`,`Imprime null`,`Lanza NullPointerException`],c:1,exp:`Las variables locales NO tienen valor por defecto: deben inicializarse antes de usarse. Los atributos de clase sí se inicializan solos (int a 0, objetos a null).`},
+ {q:`¿Qué es la sobrecarga (overloading) de métodos?`,o:[`Varios métodos con el mismo nombre pero distinta lista de parámetros en la misma clase`,`Redefinir en una subclase un método heredado con la misma firma`,`Llamar a un método desde varios hilos`,`Convertir tipos de dato automáticamente`],c:0,exp:`Overloading: mismo nombre, parámetros distintos (número, tipo u orden) en la misma clase. Redefinir un método heredado con la misma firma es overriding (sobrescritura).`},
+ {q:`¿Qué es el polimorfismo?`,o:[`Una referencia de un supertipo apunta a objetos de distintos tipos y cada uno responde según su clase real`,`Declarar varias variables con el mismo nombre`,`Que un método se llama a sí mismo`,`Convertir un double en int automáticamente`],c:0,exp:`Ejemplo: Animal a = new Perro(); a.sonido() ejecuta la versión de Perro gracias al enlace dinámico (dynamic binding) en tiempo de ejecución.`},
+ {q:`¿Qué es una interfaz funcional?`,o:[`Una interfaz con exactamente un método abstracto, utilizable con expresiones lambda`,`Una interfaz con solo métodos default`,`Una interfaz que no puede implementarse`,`Una interfaz cuyos métodos son todos static`],c:0,exp:`Ejemplos: Runnable, Comparator, Predicate, Function. Se marcan con @FunctionalInterface y permiten usar lambdas: () -> System.out.println("hola").`},
+ {q:`¿Qué hace la anotación @Override?`,o:[`Verifica en compilación que el método realmente sobrescribe uno de la superclase`,`Hace el método final y privado`,`Mejora el rendimiento en tiempo de ejecución`,`Convierte el método en estático`],c:0,exp:`No es obligatoria, pero si la firma no coincide con ningún método heredado el compilador falla, evitando errores tipográficos silenciosos.`},
+ {q:`¿Qué es el type erasure (borrado de tipos) en genéricos?`,o:[`El compilador elimina la información de tipos genéricos y la sustituye por Object o sus límites`,`La JVM borra los genéricos en ejecución con el GC`,`Los genéricos se guardan únicamente en el .java`,`Las clases genéricas no pueden instanciarse`],c:0,exp:`List<String> es simplemente List en tiempo de ejecución. Por eso no se puede hacer new T[] ni instanceof con tipos genéricos parametrizados.`},
+ {q:`¿Cuál es la diferencia entre HashMap y Hashtable?`,o:[`Hashtable está sincronizada y no admite null; HashMap no está sincronizada y admite una clave null`,`HashMap está sincronizada y Hashtable no`,`Hashtable admite varias claves null`,`Son idénticas en todo`],c:0,exp:`Hashtable es legado (Java 1.1). Para un solo hilo se prefiere HashMap; para concurrencia real, ConcurrentHashMap.`},
+ {q:`¿Qué diferencia hay entre String, StringBuilder y StringBuffer?`,o:[`String es inmutable; StringBuilder es mutable y no sincronizado; StringBuffer es mutable y sincronizado`,`Los tres son inmutables`,`StringBuilder es inmutable y más lento`,`StringBuffer no existe desde Java 8`],c:0,exp:`Para concatenar dentro de bucles usa StringBuilder: evita crear cientos de String intermedios. StringBuffer añade sincronización (más lenta) para varios hilos.`},
+ {q:`¿Qué es un thread (hilo) en Java?`,o:[`Un flujo de ejecución independiente; se crea extendiendo Thread o implementando Runnable`,`Una excepción sincronizada`,`Una colección thread-safe`,`Un tipo de variable volatile`],c:0,exp:`thread.start() arranca el hilo y llama a run() internamente. Si llamas a run() directamente, se ejecuta en el hilo actual sin crear ninguno nuevo.`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println(new String("abc") == "abc");`,o:[`false`,`true`,`Error de compilación`,`abc`],c:0,exp:`new String("abc") crea un objeto nuevo en el heap, fuera del pool de literales, y == compara referencias. Con equals() daría true.`},
+ {q:`¿Qué imprime este código?`,code:`System.out.println("A" + "B" == "AB");`,o:[`true`,`false`,`Error de compilación`,`AB`],c:0,exp:`"A" + "B" es una expresión constante: el compilador la pliega a "AB" en tiempo de compilación y ambos literales comparten la misma entrada del pool de Strings.`},
+ {q:`¿Qué hace la palabra clave synchronized en un método?`,o:[`Solo un hilo a la vez puede ejecutarlo sobre el mismo objeto`,`Hace el método más rápido`,`Evita que se lancen excepciones`,`Convierte el método en final`],c:0,exp:`Usa el monitor del objeto (o de la clase si es static) como candado, evitando condiciones de carrera y garantizando visibilidad entre hilos.`},
+ {cat:'db',q:`¿Qué es la normalización de una base de datos?`,o:[`Organizar tablas y dependencias para eliminar redundancia y anomalías (1FN, 2FN, 3FN…)`,`Hacer copias de seguridad automáticas`,`Cifrar las columnas sensibles`,`Convertir tablas relacionales a documentos JSON`],c:0,exp:`Busca que cada dato se almacene una sola vez. A veces se desnormaliza puntualmente para ganar rendimiento en lecturas.`},
+ {cat:'db',q:`¿Qué diferencia hay entre INNER JOIN y LEFT JOIN?`,o:[`INNER devuelve solo las coincidencias; LEFT añade además todas las filas de la tabla izquierda (con NULL si no casan)`,`LEFT elimina las filas sin coincidencia`,`INNER añade siempre las filas de la derecha con NULL`,`Son exactamente iguales`],c:0,exp:`Con LEFT JOIN, un pedido sin cliente asignado también aparecería en el resultado, con los campos del cliente a NULL.`},
+ {cat:'db',q:`¿Qué trade-off introduce crear un índice en una tabla?`,o:[`Acelera las lecturas, pero ralentiza INSERT/UPDATE/DELETE y ocupa espacio extra`,`Acelera todo sin ningún coste`,`Solo acelera la PRIMARY KEY`,`Comprime la tabla a la mitad`],c:0,exp:`El índice (normalmente un árbol B) es una estructura auxiliar que el motor debe mantener actualizada en cada escritura.`},
+ {cat:'db',q:`¿Qué es una inyección SQL y cómo se previene en Java?`,o:[`Código malicioso inyectado en consultas; se previene con PreparedStatement y parámetros`,`Un error de tipos; se previene con casts`,`Un bloqueo de tablas; se previene reiniciando el motor`,`Una fuga de memoria; se previene con System.gc()`],c:0,exp:`Nunca construyas SQL concatenando Strings con datos del usuario: usa PreparedStatement y stmt.setString(1, dato).`},
+ {cat:'arq',q:`¿Qué principio SOLID dice "una clase debe estar abierta a extensión y cerrada a modificación"?`,o:[`OCP (Open/Closed Principle)`,`SRP (Single Responsibility)`,`ISP (Segregación de interfaces)`,`LSP (Sustitución de Liskov)`],c:0,exp:`Se añade comportamiento con clases nuevas (p. ej. estrategias o decoradores) sin tocar el código ya probado.`},
+ {cat:'arq',q:`¿Qué es la inyección de dependencias?`,o:[`Un objeto recibe sus dependencias desde fuera en lugar de crearlas él mismo, favoreciendo el desacople`,`Crear las dependencias dentro del constructor`,`Un patrón para cifrar claves de BD`,`Inyectar código SQL en las consultas`],c:0,exp:`Facilita tests con mocks y bajo acoplamiento. Spring la aplica mediante su contenedor IoC (@Autowired, constructores…).`},
+ {cat:'arq',q:`¿Qué caracteriza a una arquitectura de microservicios?`,o:[`Servicios pequeños, autónomos y desplegables de forma independiente que colaboran por red`,`Una única aplicación con todas las capas empaquetadas juntas`,`Todos los servicios compartiendo obligatoriamente la misma base de datos`,`Funciones ejecutadas dentro de un único main`],c:0,exp:`Ventajas: escalado y despliegue independientes. Costes: latencia de red, consistencia eventual y mayor necesidad de observabilidad.`},
+ {cat:'arq',q:`¿Qué patrón define objetos suscritos que reaccionan automáticamente cuando el objeto observado cambia?`,o:[`Observer`,`Strategy`,`Decorator`,`Proxy`],c:0,exp:`Es la base de los sistemas de eventos y listeners: ActionListener en Swing, eventos en Spring, suscripciones en UI…`},
+ {cat:'proj',q:`¿Qué es CI/CD?`,o:[`Integración y entrega/despliegue continuos: automatizar compilación, tests y despliegue`,`Un tipo de base de datos distribuida`,`Un patrón de diseño de clases`,`Un comando de Git para fusionar ramas`],c:0,exp:`Herramientas: Jenkins, GitHub Actions, GitLab CI. Ejecutar tests automáticos en cada push detecta errores mucho antes.`},
+ {cat:'proj',q:`¿Qué diferencia principal hay entre git merge y git rebase?`,o:[`merge une ramas preservando el historial; rebase reescribe la historia colocando los commits sobre la rama base`,`rebase borra la rama de destino`,`merge nunca crea conflictos y rebase siempre`,`Son exactamente iguales`],c:0,exp:`Regla de oro: no hacer rebase sobre commits públicos ya compartidos con otras personas, porque reescribe el historial.`},
+ {cat:'prog',q:`¿Qué diseño se considera deseable en los módulos de un sistema?`,o:[`Bajo acoplamiento y alta cohesión`,`Alto acoplamiento y baja cohesión`,`Alto acoplamiento y alta cohesión`,`Bajo acoplamiento y baja cohesión`],c:0,exp:`Cohesión: las responsabilidades internas del módulo están relacionadas. Acoplamiento: depender lo mínimo posible de módulos externos.`},
+ {cat:'proj',q:`¿Qué es el principio DRY?`,o:[`Don't Repeat Yourself: evitar duplicar lógica centralizando el conocimiento en un solo lugar`,`Delete Redundant Years: podar código viejo`,`Un algoritmo de compresión de datos`,`Desplegar sin repetir pruebas manuales`],c:0,exp:`El código duplicado obliga a corregir el mismo bug en N sitios: extrae métodos, clases o módulos compartidos.`}
+];
+
+const FRIENDS=[{n:`María`,r:`Java Senior`,e:`👩💻`},{n:`Carlos`,r:`Profesor de POO`,e:`🧑🏫`},{n:`Lucía`,r:`Backend Developer`,e:`👩‍`}];
+
+/* ================= ESTADO ================= */
+const S={idx:0,questions:[],selected:null,locked:false,revealed:false,removed:[],
+  used:{fifty:false,audience:false,phone:false},history:[],lastResult:null};
+let tensionTimer=null, typeTimer=null, muted=false;
+
+/* ================= UTILIDADES ================= */
+const $=id=>document.getElementById(id);
+const fmt=n=>n.toLocaleString('es-ES')+' €';
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function show(id){['scr-start','scr-game','scr-study','scr-end'].forEach(s=>$(s).hidden=(s!==id));}
+function instantiate(q){const order=shuffle([0,1,2,3]);
+  return {text:q.q,code:q.code||null,exp:q.exp,cat:q.cat||'java',options:order.map(i=>q.o[i]),correct:order.indexOf(q.c)};}
+
+/* ================= AUDIO ================= */
+let actx=null;
+function ac(){if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();return actx;}
+function tone(f,d,type='sine',vol=.15,delay=0,slide=null){
+  if(muted)return;
+  try{const c=ac(),o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,c.currentTime+delay);
+    if(slide)o.frequency.exponentialRampToValueAtTime(slide,c.currentTime+delay+d);
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+d);
+    o.connect(g).connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+d+.05);
+  }catch(e){}
+}
+const sfx={
+  click:()=>tone(880,.08,'triangle',.12),
+  lock:()=>{tone(600,.1,'sine',.1);tone(820,.12,'sine',.1,.11);},
+  tense:()=>{tone(140,.16,'sine',.22);tone(140,.16,'sine',.16,.26);},
+  correct:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.35,'triangle',.16,i*.12)),
+  wrong:()=>{tone(220,.5,'sawtooth',.18,0,110);tone(160,.7,'sawtooth',.14,.15,80);},
+  lifeline:()=>{tone(700,.12,'sine',.14);tone(950,.18,'sine',.14,.12);},
+  win:()=>[523,659,784,1047,1319,1568,2093].forEach((f,i)=>tone(f,.4,'triangle',.16,i*.13))
+};
+$('btn-mute').onclick=()=>{muted=!muted;$('btn-mute').textContent=muted?'🔇':'🔊';};
+
+/* ================= ESCALA ================= */
+function buildLadder(){
+  const el=$('ladder-list');el.innerHTML='';
+  for(let i=VALUES.length-1;i>=0;i--){
+    const row=document.createElement('div');
+    row.className='l-row'+((i===4||i===9)?' milestone':'');
+    row.dataset.idx=i;
+    row.innerHTML=`<span class="l-num">${i+1}</span><span class="l-val">${fmt(VALUES[i])}</span>`;
+    el.appendChild(row);
+  }
+}
+function updateLadder(){
+  document.querySelectorAll('.l-row').forEach(r=>{
+    const i=+r.dataset.idx;
+    r.classList.toggle('current',i===S.idx&&!$('scr-game').hidden);
+    r.classList.toggle('passed',i<S.idx);
+  });
+  const cur=document.querySelector('.l-row.current');
+  if(cur)cur.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function securedAmount(){ if(S.idx>=10)return VALUES[9]; if(S.idx>=5)return VALUES[4]; return 0; }
+
+/* ================= FLUJO ================= */
+function startGame(){
+  S.idx=0;S.history=[];S.used={fifty:false,audience:false,phone:false};
+  ['ll-fifty','ll-audience','ll-phone'].forEach(id=>$(id).disabled=false);
+  S.questions=[...shuffle(EASY).slice(0,5),...shuffle(MED).slice(0,5),...shuffle(HARD).slice(0,5)].map(instantiate);
+  buildLadder();show('scr-game');renderQuestion();
+}
+function renderQuestion(){
+  const q=S.questions[S.idx];
+  S.selected=null;S.locked=false;S.revealed=false;S.removed=[];
+  $('q-num').textContent='Pregunta '+(S.idx+1);
+  $('q-bar').style.width=Math.round(((S.idx+1)/15)*100)+'%';
+  $('q-cat').innerHTML=catBadge(q.cat);
+  $('q-text').textContent=q.text;
+  if(q.code){$('q-code').hidden=false;$('q-code').textContent=q.code;}else{$('q-code').hidden=true;}
+  $('st-num').textContent=(S.idx+1)+'/15';
+  $('st-play').textContent=fmt(VALUES[S.idx]);
+  $('st-safe').textContent=fmt(securedAmount());
+  const box=$('answers');box.innerHTML='';box.classList.remove('locked');
+  q.options.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.type='button';b.className='answer';b.dataset.i=i;
+    b.innerHTML=`<span class="letter">${LETTERS[i]}:</span><span class="opt"></span>`;
+    b.querySelector('.opt').textContent=opt;
+    b.onclick=()=>selectAnswer(i);
+    box.appendChild(b);
+  });
+  $('bar-confirm').hidden=true;$('panel-exp').hidden=true;
+  updateLadder();
+}
+function selectAnswer(i){
+  if(S.locked||S.revealed||S.removed.includes(i))return;
+  S.selected=i;sfx.click();
+  document.querySelectorAll('.answer').forEach(b=>b.classList.toggle('selected',+b.dataset.i===i));
+  $('bar-confirm').hidden=false;
+}
+$('btn-cancel').onclick=()=>{S.selected=null;
+  document.querySelectorAll('.answer').forEach(b=>b.classList.remove('selected'));
+  $('bar-confirm').hidden=true;sfx.click();};
+$('btn-confirm').onclick=()=>{
+  if(S.selected==null)return;
+  S.locked=true;$('bar-confirm').hidden=true;$('answers').classList.add('locked');sfx.lock();
+  tensionTimer=setInterval(()=>sfx.tense(),700);
+  setTimeout(reveal,2600);
+};
+function reveal(){
+  clearInterval(tensionTimer);
+  const q=S.questions[S.idx],ok=S.selected===q.correct;
+  S.revealed=true;S.lastResult=ok?'ok':'bad';
+  document.querySelectorAll('.answer').forEach(b=>{
+    const i=+b.dataset.i;
+    if(i===q.correct)b.classList.add('correct');
+    else if(i===S.selected)b.classList.add('wrong');
+  });
+  ok?sfx.correct():sfx.wrong();
+  S.history.push({q,chosen:S.selected,ok});
+  const p=$('panel-exp');p.hidden=false;
+  p.classList.toggle('bad',!ok);
+  let title;
+  if(ok){
+    title='✅ ¡Correcto! Has ganado '+fmt(VALUES[S.idx]);
+    if(S.idx===4)title+=' · 🛡️ Seguro de 1.000 € asegurado';
+    if(S.idx===9)title+=' · 🛡️ Seguro de 30.000 € asegurado';
+  }else{
+    title='❌ Incorrecto';
+  }
+  $('exp-title').textContent=title;
+  $('exp-text').textContent='💡 '+q.exp;
+  $('btn-next').textContent=ok?(S.idx===14?'Ver resultado 🏆':'Siguiente pregunta →'):'Ver resultado';
+}
+$('btn-next').onclick=()=>{
+  if(S.lastResult==='ok'){
+    S.idx++;
+    if(S.idx>14){endGame('win');}else{renderQuestion();}
+  }else{endGame('lose');}
+};
+
+/* ================= COMODINES ================= */
+$('ll-fifty').onclick=()=>{
+  if(S.used.fifty||S.locked||S.revealed)return;
+  S.used.fifty=true;$('ll-fifty').disabled=true;sfx.lifeline();
+  const q=S.questions[S.idx];
+  const wrongs=shuffle([0,1,2,3].filter(i=>i!==q.correct)).slice(0,2);
+  S.removed=wrongs;
+  wrongs.forEach(i=>{
+    const b=document.querySelector(`.answer[data-i="${i}"]`);b.classList.add('dimmed');
+    if(S.selected===i){S.selected=null;b.classList.remove('selected');$('bar-confirm').hidden=true;}
+  });
+};
+$('ll-audience').onclick=()=>{
+  if(S.used.audience||S.locked||S.revealed)return;
+  S.used.audience=true;$('ll-audience').disabled=true;sfx.lifeline();
+  const q=S.questions[S.idx];
+  const tier=S.idx<5?0:S.idx<10?1:2;
+  const base=[.8,.62,.45][tier];
+  const avail=[0,1,2,3].filter(i=>!S.removed.includes(i));
+  const votes={0:0,1:0,2:0,3:0};
+  const shareC=Math.round(clamp(base+(Math.random()*.16-.08),.2,.9)*100);
+  votes[q.correct]=shareC;
+  const wrongs=avail.filter(i=>i!==q.correct);
+  let rest=100-shareC,allocated=0;
+  const parts=wrongs.map(()=>Math.random()+.15);
+  const sum=parts.reduce((a,b)=>a+b,0);
+  wrongs.forEach((w,k)=>{const v=Math.floor(rest*parts[k]/sum);votes[w]=v;allocated+=v;});
+  if(wrongs.length)votes[wrongs[wrongs.length-1]]+=rest-allocated;
+  const box=$('aud-bars');box.innerHTML='';
+  [0,1,2,3].forEach(i=>{
+    const col=document.createElement('div');col.className='aud-col';
+    col.innerHTML=`<div class="aud-pct">0%</div><div class="aud-track"><div class="aud-fill"></div></div><div class="aud-letter">${LETTERS[i]}</div>`;
+    box.appendChild(col);
+  });
+  $('modal-audience').hidden=false;
+  setTimeout(()=>{
+    box.querySelectorAll('.aud-col').forEach((col,i)=>{
+      col.querySelector('.aud-fill').style.height=votes[i]+'%';
+      col.querySelector('.aud-pct').textContent=votes[i]+'%';
+    });
+  },80);
+};
+$('aud-close').onclick=()=>{$('modal-audience').hidden=true;};
+$('ll-phone').onclick=()=>{
+  if(S.used.phone||S.locked||S.revealed)return;
+  S.used.phone=true;$('ll-phone').disabled=true;sfx.lifeline();
+  const q=S.questions[S.idx];
+  const fr=FRIENDS[Math.floor(Math.random()*FRIENDS.length)];
+  $('ph-avatar').textContent=fr.e;
+  $('ph-name').innerHTML=fr.n+`<small>${fr.r}</small>`;
+  $('ph-text').textContent='Llamando…';$('ph-text').classList.add('ph-calling');
+  $('modal-phone').hidden=false;
+  const tier=S.idx<5?0:S.idx<10?1:2;
+  const pCorrect=[.85,.65,.45][tier];
+  const avail=[0,1,2,3].filter(i=>!S.removed.includes(i));
+  let pick;
+  if(Math.random()<pCorrect){pick=q.correct;}
+  else{const w=avail.filter(i=>i!==q.correct);pick=w[Math.floor(Math.random()*w.length)];}
+  const sure=pick===q.correct;
+  const frases=sure?
+    [`¡Hola! Esta me la sé: es la ${LETTERS[pick]}, "${q.options[pick]}". En mi examen cayó justo esto, ¡confía!`,
+     `Mmm… sí, seguro: la ${LETTERS[pick]}. ${q.options[pick]}. Me juego el cuello.`]:
+    [`Uf, esta es complicada… Yo me la jugaría con la ${LETTERS[pick]}, pero no lo tengo nada claro.`,
+     `Creo recordar que es la ${LETTERS[pick]}… aunque podría equivocarme, ¡tú decides!`];
+  const msg=frases[Math.floor(Math.random()*frases.length)];
+  clearInterval(typeTimer);
+  setTimeout(()=>{
+    $('ph-text').classList.remove('ph-calling');
+    let i=0;typeTimer=setInterval(()=>{$('ph-text').textContent=msg.slice(0,++i);if(i>=msg.length)clearInterval(typeTimer);},26);
+  },1200);
+};
+$('ph-close').onclick=()=>{$('modal-phone').hidden=true;clearInterval(typeTimer);};
+
+/* ================= PLANTARSE ================= */
+$('btn-walk').onclick=()=>{
+  if(S.locked||S.revealed)return;
+  const win=S.idx>0?VALUES[S.idx-1]:0;
+  $('walk-text').innerHTML=`Ahora mismo te llevas <b style="color:var(--gold)">${fmt(win)}</b>. Si continúas y fallas, solo conservarás el último seguro (<b style="color:var(--green)">${fmt(securedAmount())}</b>). ¿Quieres plantarte?`;
+  $('modal-walk').hidden=false;
+};
+$('walk-no').onclick=()=>{$('modal-walk').hidden=true;};
+$('walk-yes').onclick=()=>{$('modal-walk').hidden=true;endGame('walk');};
+
+/* ================= FINAL ================= */
+function endGame(reason){
+  clearInterval(tensionTimer);
+  let amount,icon,title,msg;
+  if(reason==='win'){amount=VALUES[14];icon='🏆';title='¡Eres millonario!';
+    msg='¡Increíble! Has respondido correctamente las 15 preguntas de Java, BD, arquitectura y proyectos. Llegarás a tu prueba dominando el temario.';}
+  else if(reason==='walk'){amount=S.idx>0?VALUES[S.idx-1]:0;icon='🤝';title='Te has plantado';
+    msg='Decisión inteligente: te llevas lo ganado sin arriesgar. Repasa las preguntas de abajo… ¡y vuelve a por el millón!';}
+  else{amount=securedAmount();icon='💥';title='Respuesta incorrecta';
+    msg=`Caes al último seguro (${fmt(amount)}). Lo importante es el repaso: mira la explicación de cada pregunta abajo.`;}
+  $('end-icon').textContent=icon;
+  $('end-title').textContent=title;
+  $('end-amount').textContent=fmt(amount);
+  $('end-msg').textContent=msg;
+  const list=$('review-list');list.innerHTML='';
+  S.history.forEach((h,k)=>{
+    const item=document.createElement('div');
+    item.className='rev-item'+(h.ok?'':' bad');
+    let html=`<div class="rev-q">${catBadge(h.q.cat)} <b>P${k+1}.</b> ${h.q.text}`;
+    if(h.q.code)html+=`<pre>${h.q.code}</pre>`;
+    html+=`</div><div class="rev-opt ok">✔ Correcta: ${h.q.options[h.q.correct]}</div>`;
+    if(!h.ok)html+=`<div class="rev-opt bad">✘ Tu respuesta: ${h.q.options[h.chosen]}</div>`;
+    html+=`<div class="rev-exp">💡 ${h.q.exp}</div>`;
+    item.innerHTML=html;list.appendChild(item);
+  });
+  if(!S.history.length)list.innerHTML='<p style="color:var(--dim)">No llegaste a responder ninguna pregunta.</p>';
+  show('scr-end');
+  if(reason==='win'){sfx.win();confetti();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function confetti(){
+  const cont=$('confetti');cont.innerHTML='';
+  const colors=['#f6c445','#ff9100','#00e676','#4dabf7','#ffffff'];
+  for(let i=0;i<140;i++){
+    const p=document.createElement('div');p.className='cf';
+    p.style.left=Math.random()*100+'vw';
+    p.style.background=colors[i%colors.length];
+    p.style.width=p.style.height=(6+Math.random()*8)+'px';
+    p.style.animationDuration=(2.5+Math.random()*2)+'s';
+    p.style.animationDelay=(Math.random()*1.4)+'s';
+    if(Math.random()>.5)p.style.borderRadius='50%';
+    cont.appendChild(p);
+  }
+  setTimeout(()=>cont.innerHTML='',6500);
+}
+
+/* ================= ESTUDIO ================= */
+function buildStudy(){
+  const cont=$('study-content');cont.innerHTML='';
+  const tiers=[['🟢 Nivel fácil (preguntas 1-5)',EASY],['🟡 Nivel medio (preguntas 6-10)',MED],['🔴 Nivel difícil (preguntas 11-15)',HARD]];
+  tiers.forEach(t=>{
+    const sec=document.createElement('div');sec.className='study-tier';
+    sec.innerHTML=`<h3>${t[0]} · banco de ${t[1].length} preguntas</h3>`;
+    t[1].forEach(q=>{
+      const card=document.createElement('div');card.className='st-card';
+      let html=`<div class="rev-q">${catBadge(q.cat||'java')} ${q.q}`;
+      if(q.code)html+=`<pre>${q.code}</pre>`;
+      html+='</div>';
+      q.o.forEach((opt,i)=>{html+=`<div class="st-opt${i===q.c?' ok':''}">${i===q.c?'✔ ':''}${opt}</div>`;});
+      html+=`<div class="rev-exp">💡 ${q.exp}</div>`;
+      card.innerHTML=html;sec.appendChild(card);
+    });
+    cont.appendChild(sec);
+  });
+}
+function buildLegends(){
+  const html=Object.values(CATS).map(c=>`<span class="cat-badge">${c[0]} <b>${c[1]}</b></span>`).join('');
+  $('cat-legend').innerHTML=html;
+  $('cat-legend-2').innerHTML=html;
+}
+buildLegends();
+
+/* ================= NAVEGACIÓN / TECLADO ================= */
+$('btn-start').onclick=()=>{sfx.lifeline();startGame();};
+$('btn-study').onclick=()=>{buildStudy();show('scr-study');};
+$('btn-study-back').onclick=()=>show('scr-start');
+$('btn-study-play').onclick=()=>{sfx.lifeline();startGame();};
+$('btn-replay').onclick=()=>startGame();
+$('btn-home').onclick=()=>show('scr-start');
+
+document.addEventListener('keydown',e=>{
+  if($('scr-game').hidden)return;
+  const k=e.key.toLowerCase();
+  const map={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3};
+  if(k in map&&!S.locked&&!S.revealed)selectAnswer(map[k]);
+  if(k==='enter'&&S.selected!=null&&!S.locked&&!S.revealed)$('btn-confirm').click();
+  if(k==='enter'&&S.revealed)$('btn-next').click();
+});
+</script>
+</body>
+</html>
