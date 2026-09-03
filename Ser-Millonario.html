@@ -240,13 +240,13 @@ pre,code{font-family:'JetBrains Mono',monospace}
     <div class="logo-wrap"><img src="https://image.qwenlm.ai/public_source/11d46e38-6a1a-4c89-b928-434a3032bd2d/1ea0319ed-d47b-424c-8da4-6c4f7409406c.png" alt="Trofeo Java"></div>
     <h1 class="title">¿Quién quiere ser<br>millonario?</h1>
     <div class="osw" style="color:var(--dim);letter-spacing:4px;text-transform:uppercase;font-size:.95rem">— Edición Ingeniería de Software —</div>
-    <p class="subtitle">15 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>110 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
+    <p class="subtitle">20 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>120 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
     <div class="cat-legend" id="cat-legend"></div>
     <div class="rules">
-      <div class="rule-card"><div class="ico">🎯</div><h3>Objetivo</h3><p>Supera 15 preguntas de dificultad creciente con temas variados de ingeniería. Puedes <b>plantarte</b> y llevarte lo ganado.</p></div>
-      <div class="rule-card"><div class="ico">🛡️</div><h3>Seguros</h3><p>En la pregunta 5 aseguras <b>1.000 €</b> y en la 10, <b>30.000 €</b>. Si fallas, caes al último seguro.</p></div>
+      <div class="rule-card"><div class="ico">🎯</div><h3>Objetivo</h3><p>Supera 20 preguntas de dificultad creciente con temas variados de ingeniería. Puedes <b>plantarte</b> y llevarte lo ganado.</p></div>
+      <div class="rule-card"><div class="ico">🛡️</div><h3>Seguros</h3><p>En la pregunta 5 aseguras <b>1.000 €</b>, en la 10 <b>30.000 €</b> y en la 15 <b>250.000 €</b>. Si fallas, caes al último seguro.</p></div>
       <div class="rule-card"><div class="ico">💡</div><h3>Comodines</h3><p><b>50:50</b>, <b>votación del público</b> y <b>llamada a un amigo</b>. Uno por partida cada uno.</p></div>
-      <div class="rule-card"><div class="ico">📚</div><h3>Modo estudio</h3><p>Consulta el temario completo con las 110 preguntas, sus categorías y explicaciones antes de jugar.</p></div>
+      <div class="rule-card"><div class="ico">📚</div><h3>Modo estudio</h3><p>Consulta el temario completo con las 120 preguntas, sus categorías y explicaciones antes de jugar.</p></div>
     </div>
     <div class="start-btns">
       <button class="btn-gold" id="btn-start">¡Empezar a jugar!</button>
@@ -268,7 +268,7 @@ pre,code{font-family:'JetBrains Mono',monospace}
     <div class="game-grid">
       <div>
         <div class="status-bar">
-          <div class="chip">Pregunta <b id="st-num">1/15</b></div>
+          <div class="chip">Pregunta <b id="st-num">1/20</b></div>
           <div class="chip">En juego: <b id="st-play">100 €</b></div>
           <div class="chip safe">Asegurado: <b id="st-safe">0 €</b></div>
         </div>
@@ -373,7 +373,7 @@ const CATS={
 };
 const catBadge=c=>{const k=CATS[c]||CATS.java;return `<span class="cat-badge">${k[0]} <b>${k[1]}</b></span>`;};
 
-const VALUES=[100,200,300,500,1000,2000,4000,8000,15000,30000,60000,120000,300000,600000,1000000];
+const VALUES=[100,200,300,500,1000,2000,4000,8000,15000,30000,60000,120000,250000,400000,600000,750000,850000,920000,970000,1000000];
 const LETTERS=['A','B','C','D'];
 
 /* Banco de preguntas fácil cargado desde preguntas.js */
@@ -428,7 +428,7 @@ function buildLadder(){
   const el=$('ladder-list');el.innerHTML='';
   for(let i=VALUES.length-1;i>=0;i--){
     const row=document.createElement('div');
-    row.className='l-row'+((i===4||i===9)?' milestone':'');
+    row.className='l-row'+((i===4||i===9||i===14)?' milestone':'');
     row.dataset.idx=i;
     row.innerHTML=`<span class="l-num">${i+1}</span><span class="l-val">${fmt(VALUES[i])}</span>`;
     el.appendChild(row);
@@ -443,7 +443,7 @@ function updateLadder(){
   const cur=document.querySelector('.l-row.current');
   if(cur)cur.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
-function securedAmount(){ if(S.idx>=10)return VALUES[9]; if(S.idx>=5)return VALUES[4]; return 0; }
+function securedAmount(){ if(S.idx>=15)return VALUES[14]; if(S.idx>=10)return VALUES[9]; if(S.idx>=5)return VALUES[4]; return 0; }
 
 /* ================= HISTORIAL ANTI-REPETICIÓN ================= */
 const HIST_KEY='sm_historial';
@@ -473,18 +473,18 @@ function pickUnique(pool,n){
 function startGame(){
   S.idx=0;S.history=[];S.used={fifty:false,audience:false,phone:false};
   ['ll-fifty','ll-audience','ll-phone'].forEach(id=>$(id).disabled=false);
-  S.questions=[...pickUnique(EASY,5),...pickUnique(MED,5),...pickUnique(HARD,5)].map(instantiate);
+  S.questions=[...pickUnique(EASY,4),...pickUnique(MED,6),...pickUnique(HARD,10)].map(instantiate);
   buildLadder();show('scr-game');renderQuestion();
 }
 function renderQuestion(){
   const q=S.questions[S.idx];
   S.selected=null;S.locked=false;S.revealed=false;S.removed=[];
   $('q-num').textContent='Pregunta '+(S.idx+1);
-  $('q-bar').style.width=Math.round(((S.idx+1)/15)*100)+'%';
+  $('q-bar').style.width=Math.round(((S.idx+1)/20)*100)+'%';
   $('q-cat').innerHTML=catBadge(q.cat);
   $('q-text').textContent=q.text;
   if(q.code){$('q-code').hidden=false;$('q-code').textContent=q.code;}else{$('q-code').hidden=true;}
-  $('st-num').textContent=(S.idx+1)+'/15';
+  $('st-num').textContent=(S.idx+1)+'/20';
   $('st-play').textContent=fmt(VALUES[S.idx]);
   $('st-safe').textContent=fmt(securedAmount());
   const box=$('answers');box.innerHTML='';box.classList.remove('locked');
@@ -532,17 +532,18 @@ function reveal(){
     title='✅ ¡Correcto! Has ganado '+fmt(VALUES[S.idx]);
     if(S.idx===4)title+=' · 🛡️ Seguro de 1.000 € asegurado';
     if(S.idx===9)title+=' · 🛡️ Seguro de 30.000 € asegurado';
+    if(S.idx===14)title+=' · 🛡️ Seguro de 250.000 € asegurado';
   }else{
     title='❌ Incorrecto';
   }
   $('exp-title').textContent=title;
   $('exp-text').textContent='💡 '+q.exp;
-  $('btn-next').textContent=ok?(S.idx===14?'Ver resultado 🏆':'Siguiente pregunta →'):'Ver resultado';
+  $('btn-next').textContent=ok?(S.idx===19?'Ver resultado 🏆':'Siguiente pregunta →'):'Ver resultado';
 }
 $('btn-next').onclick=()=>{
   if(S.lastResult==='ok'){
     S.idx++;
-    if(S.idx>14){endGame('win');}else{renderQuestion();}
+    if(S.idx>19){endGame('win');}else{renderQuestion();}
   }else{endGame('lose');}
 };
 
@@ -633,8 +634,8 @@ $('walk-yes').onclick=()=>{$('modal-walk').hidden=true;endGame('walk');};
 function endGame(reason){
   clearInterval(tensionTimer);
   let amount,icon,title,msg;
-  if(reason==='win'){amount=VALUES[14];icon='🏆';title='¡Eres millonario!';
-    msg='¡Increíble! Has respondido correctamente las 15 preguntas de Java, BD, arquitectura y proyectos. Llegarás a tu prueba dominando el temario.';}
+  if(reason==='win'){amount=VALUES[19];icon='🏆';title='¡Eres millonario!';
+    msg='¡Increíble! Has respondido correctamente las 20 preguntas de Java, BD, arquitectura y proyectos. Llegarás a tu prueba dominando el temario.';}
   else if(reason==='walk'){amount=S.idx>0?VALUES[S.idx-1]:0;icon='🤝';title='Te has plantado';
     msg='Decisión inteligente: te llevas lo ganado sin arriesgar. Repasa las preguntas de abajo… ¡y vuelve a por el millón!';}
   else{amount=securedAmount();icon='💥';title='Respuesta incorrecta';
@@ -678,7 +679,7 @@ function confetti(){
 /* ================= ESTUDIO ================= */
 function buildStudy(){
   const cont=$('study-content');cont.innerHTML='';
-  const tiers=[['🟢 Nivel fácil (preguntas 1-5)',EASY],['🟡 Nivel medio (preguntas 6-10)',MED],['🔴 Nivel difícil (preguntas 11-15)',HARD]];
+  const tiers=[['🟢 Nivel fácil (preguntas 1-4)',EASY],['🟡 Nivel medio (preguntas 5-10)',MED],['🔴 Nivel difícil (preguntas 11-20)',HARD]];
   tiers.forEach(t=>{
     const sec=document.createElement('div');sec.className='study-tier';
     sec.innerHTML=`<h3>${t[0]} · banco de ${t[1].length} preguntas</h3>`;
