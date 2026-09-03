@@ -99,7 +99,10 @@ pre,code{font-family:'JetBrains Mono',monospace}
   padding:10px 20px;border-radius:50px;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;transition:.2s}
 #btn-walk:hover{background:rgba(255,145,0,.15);box-shadow:0 0 14px rgba(255,145,0,.3)}
 #btn-mute{position:fixed;top:12px;right:12px;z-index:60;width:44px;height:44px;border-radius:50%;
-  background:#0b1545cc;border:1px solid var(--line);font-size:1.15rem;backdrop-filter:blur(4px)}
+   background:#0b1545cc;border:1px solid var(--line);font-size:1.15rem;backdrop-filter:blur(4px)}
+.ver-badge{position:fixed;top:12px;left:12px;z-index:60;padding:4px 10px;border-radius:99px;
+   background:#0b1545cc;border:1px solid var(--line);color:var(--dim);font-size:.68rem;
+   letter-spacing:1px;font-family:'JetBrains Mono',monospace;backdrop-filter:blur(4px)}
 
 /* ---------- Zona de juego ---------- */
 .game-grid{display:grid;grid-template-columns:1fr 270px;gap:20px;align-items:start}
@@ -232,6 +235,7 @@ pre,code{font-family:'JetBrains Mono',monospace}
 <body>
 <div id="rays"></div>
 <button id="btn-mute" title="Sonido">🔊</button>
+<div class="ver-badge" title="Versión cargada">v1.0.0</div>
 
 <div class="app">
 
@@ -543,7 +547,14 @@ function reveal(){
 $('btn-next').onclick=()=>{
   if(S.lastResult==='ok'){
     S.idx++;
-    if(S.idx>19){endGame('win');}else{renderQuestion();}
+    if(S.idx>19){endGame('win');}else{
+      renderQuestion();
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+      setTimeout(()=>{
+        const card=document.querySelector('.question-card');
+        if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+      },4000);
+    }
   }else{endGame('lose');}
 };
 
