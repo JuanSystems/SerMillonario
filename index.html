@@ -481,6 +481,13 @@ function startGame(){
   ['ll-fifty','ll-audience','ll-phone'].forEach(id=>$(id).disabled=false);
   S.questions=[...pickUnique(EASY,4),...pickUnique(MED,6),...pickUnique(HARD,10)].map(instantiate);
   buildLadder();show('scr-game');renderQuestion();
+  if(window.innerWidth<=900){
+    window.scrollTo({top:document.body.scrollHeight,behavior:'auto'});
+    setTimeout(()=>{
+      const card=document.querySelector('.question-card');
+      if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+    },2500);
+  }
 }
 function renderQuestion(){
   const q=S.questions[S.idx];
