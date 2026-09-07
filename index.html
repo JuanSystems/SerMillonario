@@ -244,7 +244,7 @@ pre,code{font-family:'JetBrains Mono',monospace}
     <div class="logo-wrap"><img src="https://image.qwenlm.ai/public_source/11d46e38-6a1a-4c89-b928-434a3032bd2d/1ea0319ed-d47b-424c-8da4-6c4f7409406c.png" alt="Trofeo Java"></div>
     <h1 class="title">¿Quién quiere ser<br>millonario?</h1>
     <div class="osw" style="color:var(--dim);letter-spacing:4px;text-transform:uppercase;font-size:.95rem">— Edición Ingeniería de Software —</div>
-    <p class="subtitle">20 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>200 preguntas</b> de <b>Java, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
+    <p class="subtitle">20 preguntas te separan del <b>1.000.000 €</b>. Banco de <b>200 preguntas</b> de <b>Java, Spring Boot, Python, bases de datos, arquitectura, programación y estructura de proyectos</b>, cada una con su <b>explicación</b> para que arrases en tu prueba.</p>
     <div class="cat-legend" id="cat-legend"></div>
     <div class="rules">
       <div class="rule-card"><div class="ico">🎯</div><h3>Objetivo</h3><p>Supera 20 preguntas de dificultad creciente con temas variados de ingeniería. Puedes <b>plantarte</b> y llevarte lo ganado.</p></div>
@@ -261,7 +261,7 @@ pre,code{font-family:'JetBrains Mono',monospace}
   <!-- ============ JUEGO ============ -->
   <section id="scr-game" hidden>
     <div class="hud">
-      <div class="hud-title">Millonario · Ing. de Software<small>Java · BD · Arquitectura · Proyectos</small></div>
+      <div class="hud-title">Millonario · Ing. de Software<small>Java · Spring Boot · Python · BD · Arquitectura · Proyectos</small></div>
       <div class="lifelines">
         <button class="ll" id="ll-fifty" title="Comodín 50:50"><span class="ll-txt">50:50</span></button>
         <button class="ll" id="ll-audience" title="Votación del público">👥</button>
@@ -373,7 +373,9 @@ const CATS={
   db:['🗄️','Base de datos'],
   arq:['🏗️','Arquitectura'],
   prog:['💻','Programación'],
-  proj:['📁','Proyectos']
+  proj:['📁','Proyectos'],
+  py:['🐍','Python'],
+  spring:['🍃','Spring Boot']
 };
 const catBadge=c=>{const k=CATS[c]||CATS.java;return `<span class="cat-badge">${k[0]} <b>${k[1]}</b></span>`;};
 
@@ -646,7 +648,7 @@ function endGame(reason){
   clearInterval(tensionTimer);
   let amount,icon,title,msg;
   if(reason==='win'){amount=VALUES[19];icon='🏆';title='¡Eres millonario!';
-    msg='¡Increíble! Has respondido correctamente las 20 preguntas de Java, BD, arquitectura y proyectos. Llegarás a tu prueba dominando el temario.';}
+    msg='¡Increíble! Has respondido correctamente las 20 preguntas de Java, Spring Boot, Python, BD, arquitectura y proyectos. Llegarás a tu prueba dominando el temario.';}
   else if(reason==='walk'){amount=S.idx>0?VALUES[S.idx-1]:0;icon='🤝';title='Te has plantado';
     msg='Decisión inteligente: te llevas lo ganado sin arriesgar. Repasa las preguntas de abajo… ¡y vuelve a por el millón!';}
   else{amount=securedAmount();icon='💥';title='Respuesta incorrecta';
